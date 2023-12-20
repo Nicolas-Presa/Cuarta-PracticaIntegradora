@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Manzana",
+    "description": "Esta Manzana es verde",
+    "price": 150,
+    "thumbnail": "./",
+    "stock": 20,
+    "code": 250,
+    "id": 1
+  },
+  {
+    "title": "zanahoria",
+    "description": "Esta zanahoria es naranja",
+    "price": 100,
+    "thumbnail": "./",
+    "stock": 50,
+    "code": 251,
+    "id": 2
+  },
+  {
+    "title": "Kiwi",
+    "description": "Este Kiwi es violeta",
+    "price": 250,
+    "thumbnail": "./",
+    "stock": 60,
+    "code": 252,
+    "id": 3
+  }
+]
