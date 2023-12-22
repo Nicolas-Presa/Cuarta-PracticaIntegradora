@@ -51,9 +51,9 @@ app.get('/products', async (req, res) => {
     
 })
 
-app.get('products/:pid', async(req, res) => {
-    let productPid = req.params.pid;
-    let product = products.find(p => p.id === productPid)
+app.get('/products/:pid', async(req, res) => {
+    let productPid = parseInt(req.params.pid);
+    let product = products.find(p => p.id === productPid);
 
     if(!product){
         return res.send( {error: 'Producto no encontrado'} );
@@ -61,6 +61,7 @@ app.get('products/:pid', async(req, res) => {
         return res.send( {product} );
     }  //CODIGO NO FUNCIONA, no pude encontrar el error, la logica parece correcta pero algo no debo estar escribiendo bien y no puedo encontrar que
 })
+
 
 
 app.listen(PORT, () => {

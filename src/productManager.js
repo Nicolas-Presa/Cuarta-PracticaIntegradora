@@ -19,13 +19,17 @@ class ProductManager{
         await fs.promises.writeFile(this.path, productJson);
 }
 
-    getProducts = async() => {
+    getProducts = async(limit) => {
         let products = [];
         const product = await fs.promises.readFile(this.path, {encoding:'utf-8'})
         const productParse = JSON.parse(product)
-        products = productParse;
         
-        return products
+        if (limit) {
+            products = productParse.slice(0, limit);
+        } else {
+            products = productParse;
+        }
+        return products;
     }
 
     getProductById = async (id) => {
