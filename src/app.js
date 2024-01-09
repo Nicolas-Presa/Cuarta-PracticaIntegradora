@@ -59,7 +59,7 @@ app.get('/products/:pid', async(req, res) => {
         return res.send( {error: 'Producto no encontrado'} );
     }else{
         return res.send( {product} );
-    }  //CODIGO NO FUNCIONA, no pude encontrar el error, la logica parece correcta pero algo no debo estar escribiendo bien y no puedo encontrar que
+    }
 })
 
 
