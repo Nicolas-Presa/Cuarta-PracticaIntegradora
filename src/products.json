@@ -1,29 +1,46 @@
 [
   {
     "title": "Manzana",
-    "description": "Esta Manzana es verde",
-    "price": 150,
-    "thumbnail": "./",
-    "stock": 20,
-    "code": 250,
+    "description": "Esta fruta es de color roja",
+    "code": "uno",
+    "price": 350,
+    "status": true,
+    "stock": 200,
+    "category": "frutas",
+    "thumbnails": "/",
     "id": 1
   },
   {
-    "title": "zanahoria",
-    "description": "Esta zanahoria es naranja",
-    "price": 100,
-    "thumbnail": "./",
-    "stock": 50,
-    "code": 251,
+    "title": "Naranja",
+    "description": "Esta fruta es de color naranja",
+    "code": "dos",
+    "price": 300,
+    "status": true,
+    "stock": 150,
+    "category": "frutas",
+    "thumbnails": "/",
     "id": 2
   },
   {
     "title": "Kiwi",
-    "description": "Este Kiwi es violeta",
+    "description": "Esta fruta es de color violeta",
+    "code": "tres",
     "price": 250,
-    "thumbnail": "./",
-    "stock": 60,
-    "code": 252,
+    "status": true,
+    "stock": 275,
+    "category": "frutas",
+    "thumbnails": "/",
     "id": 3
+  },
+  {
+    "title": "Manzana Verde",
+    "description": "Esta fruta es de color verde",
+    "code": "cinco",
+    "price": 700,
+    "status": true,
+    "stock": 850,
+    "category": "frutas",
+    "thumbnails": "/",
+    "id": 4
   }
 ]

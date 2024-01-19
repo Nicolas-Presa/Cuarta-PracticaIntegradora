@@ -10,14 +10,38 @@ class ProductManager{
         this.idProduct = 0;
     }
 
-    addProduct = async(product) => {
-        this.idProduct = this.idProduct + 1;
-        product.id = this.idProduct;
+    async loadProducts() {
+        try {
+            const data = await fs.promises.readFile(this.path, 'utf-8');
+            this.products = JSON.parse(data);
+        } catch (error) {
+            console.error('Error reading file:', error.message);
+        }
+    }
 
-        this.product.push(product);
-        const productJson = JSON.stringify(this.product, null, 2);
-        await fs.promises.writeFile(this.path, productJson);
-}
+    async saveProducts() {
+        const productJson = JSON.stringify(this.products, null, 2);
+        try {
+            await fs.promises.writeFile(this.path, productJson);
+        } catch (error) {
+            console.error('Error writing to file:', error.message);
+        }
+    }
+
+
+
+
+    async addProduct(product) {
+        await this.loadProducts();
+
+        const maxId = this.products.reduce((max, product) => (product.id > max ? product.id : max), 0);
+        const newProductId = maxId + 1;
+
+        product.id = newProductId;
+        this.products.push(product);
+
+        this.saveProducts();
+    }
 
     getProducts = async(limit) => {
         let products = [];
@@ -38,35 +62,34 @@ class ProductManager{
 
         const productById = productParse.find(product => product.id === id)
         if(productById){
-            console.log(productById);
+            return productById;
         }else{
-            console.error("ERROR, Product Not found");
+            return null;
         }
     }
     
-    updateProduct = async (id, newData) => {
-        const product = await fs.promises.readFile(this.path, {encoding:'utf-8'})
-        const productParse = JSON.parse(product)
+    async updateProduct(id, newData) {
+        await this.loadProducts();
 
-        const productById = await productParse.findIndex(product => product.id === id)
-        if(productById){
-            productParse[id] = newData
-            const productStrinify = JSON.stringify(productParse, null, 2);
-            await fs.promises.writeFile(this.path, productStrinify);
-        }else{
-            console.error("ERROR, Product Not Found");
+        const productToUpdate = this.products.find(product => product.id === id);
+
+        if (productToUpdate) {
+            Object.assign(productToUpdate, newData);
+            await this.saveProducts();
+            console.log(`Product with ID ${id} updated successfully.`);
+        } else {
+            console.log(`Product with ID ${id} not found.`);
         }
     }
 
     deleteProduct = async (id) => {
-        const product = await fs.promises.readFile(this.path, {encoding:'utf-8'})
-        const productParse = JSON.parse(product)
+        await this.loadProducts();
 
-        const productById = await productParse.findIndex(product => product.id === id)
-        if(productById){
-            productParse.splice(id, 1);
-            const productStrinify = JSON.stringify(productParse, null, 2);
-            await fs.promises.writeFile(this.path, productStrinify);
+        const idProduct = this.products.findIndex(product => product.id === id)
+
+        if(idProduct !== -1){
+            this.products.splice(idProduct, 1);
+            await this.saveProducts();
         }else{
             console.error("ERROR, Product Not Found");
         }
@@ -74,22 +97,6 @@ class ProductManager{
 }
 
 
-
-
-
-// await manager1.getProducts();
-// await manager1.getProductById(2);
-
-
-// await manager1.updateProduct(0, 
-// {
-//     title: "Manzana",
-//     description: "Esta Manzana es roja",
-//     price: 1500,
-//     thumbnail: './',
-//     stock: 100,
-//     code: 250}
-// )
 
 
 // await manager1.deleteProduct(0)
