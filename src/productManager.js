@@ -38,6 +38,8 @@ class ProductManager{
         const newProductId = maxId + 1;
 
         product.id = newProductId;
+        product.status = true;
+
         this.products.push(product);
 
         this.saveProducts();
