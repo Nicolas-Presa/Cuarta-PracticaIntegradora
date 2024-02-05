@@ -28,3 +28,6 @@ buttonsEliminar.forEach(button => {
         socket.emit('deleteProduct', productId);
     });
 });
+
+
+

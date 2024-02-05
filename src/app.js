@@ -5,12 +5,20 @@ import { __dirname } from './utils.js';
 import viewsRouter from './routes/views.routes.js'
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io';
-import { ProductManager } from './productManager.js';
+import { ProductManager } from './dao/daoFile/productManager.controller.fs.js';
+import mongoose from 'mongoose';
 //Importaciones necesarias para trabajar
 
 const manager1 = new ProductManager('./products.json');
+const MONGOOSE_URL = 'mongodb+srv://ecommerce:coder2024@cluster0.cjhgsxo.mongodb.net/ecommerce';
 const app = express();
 const PORT = 8080;
+
+try{
+    await mongoose.connect(MONGOOSE_URL)
+}catch(err){
+    console.log(`No se puede conectar con bbdd (${err.message})`);
+}
 const httpServer = app.listen(PORT, () => {
     console.log(`Servicio arctivo en puerto ${PORT}`)
 })

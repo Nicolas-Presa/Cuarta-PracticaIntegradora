@@ -1,55 +1,63 @@
 import { Router } from "express";
-import { ProductManager } from "../productManager.js";
-
+// import { ProductManager } from "../controllers/productManager.controller.fs.js";
+import { ProductManager } from '../dao/daoMongo/productManager.controller.mdb.js'
 
 const router = Router();
-const manager1 = new ProductManager('./products.json');
-const products = await manager1.getProducts();
+const controller = new ProductManager();
+// const manager1 = new ProductManager('./products.json');
+// const products = await manager1.getProducts();
 
 
 
 router.get('/', async (req, res) => {
     try{
-        res.status(200).send( {products} )
-    }catch{
-        res.status(400).send('Error en la carga de productos');
+        const products = await controller.getProducts()
+        res.status(200).send({status: 'OK', data: products})
+    }catch(err){
+        res.status(400).send({status: 'ERR', data: err.message});
     }
     
 })
 
 router.get('/:pid', async(req, res) => {
-    let productPid = parseInt(req.params.pid);
-    let product = await manager1.getProductById(productPid);
+    let productPid = req.params.pid;
+    let product = await controller.getProductById(productPid);
 
     if(!product){
         return res.status(400).send( {error: 'Producto no encontrado'} );
     }else{
-        return res.status(200).send( {product} );
+        return res.status(200).send({status: 'OK', data: product});
     }
 })
 
 router.post('/', async (req, res) => {
     try{
-        const newProduct = req.body;
-        await manager1.addProduct(newProduct);
-        res.status(200).send('Nuevo producto agregado');
-    }catch{
-        res.status(400).send('error al agregar producto');
+        const { title, description, code, price, status, stock, category, thumbnails } = req.body
+        
+        if(!title || !description || !code || !price || !status || !stock || !category || !thumbnails){
+            res.status(400).send({status: 'ERR', data: 'Faltan completar campos'})
+        }else{
+            const newContent = { title, description, code, price, status, stock, category, thumbnails}
+            const result = await controller.addProduct(newContent)
+            res.status(200).send({status: 'OK', data: result})
+        }
+    }catch(err){
+        res.status(500).send({status: 'ERR', data: err.message})
     }
 })
 
 router.put('/:pid', async (req, res) => {
     try {
         let updateProduct = req.body;
-        let productPid = parseInt(req.params.pid);
-        await manager1.updateProduct(productPid, updateProduct);
+        let productPid = req.params.pid;
+        await controller.updateProduct(productPid, updateProduct);
 
-        const newProduct = await manager1.getProductById(productPid);
+        const newProduct = await controller.getProductById(productPid);
 
         if(!newProduct){
             res.status(500).send('Error al actualizar el producto')
         }else{
-            res.status(200).send({newProduct});
+            res.status(200).send({status: 'OK', data: newProduct});
         }
 
     } catch{
@@ -59,8 +67,8 @@ router.put('/:pid', async (req, res) => {
 
 
 router.delete('/:pid', async (req, res) => {
-    const productPid = parseInt(req.params.pid);
-    await manager1.deleteProduct(productPid);
+    const productPid = req.params.pid;
+    await controller.deleteProduct(productPid);
 
     if(!productPid){
         res.status(400).send('producto no encontrado')

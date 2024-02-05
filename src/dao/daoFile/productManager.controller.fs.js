@@ -99,9 +99,4 @@ class ProductManager{
 }
 
 
-
-
-// await manager1.deleteProduct(0)
-
-
 export {ProductManager};
