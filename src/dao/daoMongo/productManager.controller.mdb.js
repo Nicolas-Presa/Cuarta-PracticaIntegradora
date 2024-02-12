@@ -12,14 +12,31 @@ class ProductManager{
         }
     }
 
-    getProducts = async() => {
-        try{
-        const products = await productModel.find().lean();
-        return products
-        }catch(err){
-            return err.message
+    getProducts = async (filter, limit, page, sort = 'asc') => {
+        try {
+            const sortOrder = sort === 'asc' ? 1 : sort === 'desc' ? -1 : undefined;
+
+            let query = {};
+            if (filter) {
+                query.category = filter;
+            }
+    
+            const process = await productModel.paginate(
+                query,
+                {
+                    limit: limit,
+                    page: page,
+                    sort: sortOrder ? { price: sortOrder } : undefined,
+                    lean: true,
+                }
+            );
+            return process;
+        } catch (err) {
+            return err.message;
         }
-    }
+    };
+    
+    
 
     getProductById = async (id) => {
         try{

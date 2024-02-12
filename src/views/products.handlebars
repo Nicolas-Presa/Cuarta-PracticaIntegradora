@@ -1,0 +1,31 @@
+<h1 class="title"> {{title}} </h1>
+
+<nav class="">
+    <ul class="container__pages">
+        {{#if products.hasPrevPage}}
+            <li>
+                <a class="container__a" href="/products?page={{products.prevPage}}">Ant</a>
+            </li>
+        {{/if}}
+            <li>
+                <a class="container__a" href="/products?page=1">Pg 1</a></li>
+            <li>
+                <a class="container__a" href="#">Pg {{products.page}} de {{products.totalPages}}</a></li>
+        {{#if products.hasNextPage}}
+            <li>
+                <a class="container__a" href="/products?page={{products.nextPage}}">Sig</a>
+            </li>
+        {{/if}}
+    </ul>
+</nav>
+
+<div class="product__container">
+    {{#each products.docs}}
+        <div class="product__list">
+            <h1 class="product__itle"> {{ this.title }} </h1>
+            <p class="product__description">Talle: {{ this.description }} </p>
+            <span class="product__price"> $ {{ this.price }} </span>
+            <button class="product__button">Agregar al carrito</button>
+        </div>
+    {{/each}}
+</div>
