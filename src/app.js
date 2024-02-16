@@ -7,11 +7,17 @@ import handlebars from 'express-handlebars'
 // import { Server } from 'socket.io';
 // import { ProductManager } from './dao/daoFile/productManager.controller.fs.js';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import cookiesRouter from './routes/cookies.routes.js'
+import session from 'express-session'
+import sessionsRouter from './routes/sessions.routes.js'
+import MongoStore from 'connect-mongo';
 
 
 // const manager1 = new ProductManager('./products.json');
 const MONGOOSE_URL = 'mongodb+srv://ecommerce:coder2024@cluster0.cjhgsxo.mongodb.net/ecommerce';
 const app = express();
+
 const PORT = 8080;
 
 try{
@@ -57,11 +63,20 @@ app.listen(PORT, () => {
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cookieParser('Us3RS3cR3T'));
+app.use(session({ 
+    store: MongoStore.create({ mongoUrl: MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
+    secret: 'Us3RS3cR3T', 
+    resave: false, 
+    saveUninitialized: false 
+}))
 
 
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+app.use('/api/cookies', cookiesRouter);
 app.use('/products', viewsRouter);
+app.use('/api/sessions', sessionsRouter)
 
 
 app.engine('handlebars', handlebars.engine());

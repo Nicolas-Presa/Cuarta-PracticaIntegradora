@@ -1,4 +1,16 @@
-<h1 class="title"> {{title}} </h1>
+    {{#if user.admin}}
+        <h2>Bienvenido usuario Administrador {{ user.username }} </h2>
+    {{/if}}
+
+    {{#if user.user }}
+        <h2>Bienvenido usuario {{ user.username }}</h2>
+    {{/if}}
+
+<form action="/api/sessions/logout" method="get">
+    <button type="submit" class="button__logout">Cerrar Sesion</button>
+</form>
+
+<h3 class="title"> {{title}} </h3>
 
 <nav class="">
     <ul class="container__pages">

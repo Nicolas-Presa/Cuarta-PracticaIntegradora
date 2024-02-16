@@ -9,6 +9,7 @@ const cartController = new CartManager();
 
 router.get('/', async (req, res) => {
     try {
+        if(req.session.user){
         let filter = req.query.filter;
         let limit = parseInt(req.query.limit, 10) || 10;
         let page = parseInt(req.query.page, 10) || 1;
@@ -21,9 +22,14 @@ router.get('/', async (req, res) => {
         }
 
         res.render('products', {
+            
             title: 'Productos',
-            products: products
+            products: products,
+            user: req.session.user
         });
+        }else{
+            res.redirect('/products/login');
+        }
     } catch (err) {
         res.status(400).send({ status: 'error', payload: err.message });
     }
@@ -58,6 +64,19 @@ router.post('/save-message', async (req, res) => {
         res.status(500).send({status: 'error', payload: 'Error al guardar el mensaje'});
     }
 });
+
+router.get('/cookies', async (req, res) => {
+    res.render('cookies', {})
+})
+
+router.get('/register', (req, res) => {
+    res.render('register', {})
+})
+
+router.get('/login', (req, res) =>{
+    res.render('login', {})
+})
+
 
 
 // router.get('/', async(req, res) => {
