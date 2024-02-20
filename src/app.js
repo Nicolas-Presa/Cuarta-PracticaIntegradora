@@ -4,83 +4,55 @@ import cartsRouter from './routes/carts.routes.js';
 import { __dirname } from './utils.js';
 import viewsRouter from './routes/views.routes.js'
 import handlebars from 'express-handlebars'
-// import { Server } from 'socket.io';
-// import { ProductManager } from './dao/daoFile/productManager.controller.fs.js';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cookiesRouter from './routes/cookies.routes.js'
 import session from 'express-session'
 import sessionsRouter from './routes/sessions.routes.js'
 import MongoStore from 'connect-mongo';
+import passport from 'passport';
 
 
-// const manager1 = new ProductManager('./products.json');
-const MONGOOSE_URL = 'mongodb+srv://ecommerce:coder2024@cluster0.cjhgsxo.mongodb.net/ecommerce';
-const app = express();
 
 const PORT = 8080;
+const MONGOOSE_URL = 'mongodb+srv://ecommerce:coder2024@cluster0.cjhgsxo.mongodb.net/ecommerce';
+
 
 try{
     await mongoose.connect(MONGOOSE_URL)
+    const app = express();
+
+
+    app.listen(PORT, () => {
+        console.log(`Servicio arctivo en puerto ${PORT}`)
+    })
+
+
+    app.use(express.urlencoded({extended: true}));
+    app.use(express.json());
+    app.use(cookieParser('Us3RS3cR3T'));
+    app.use(session({ 
+        store: MongoStore.create({ mongoUrl: MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
+        secret: 'Us3RS3cR3T', 
+        resave: false, 
+        saveUninitialized: false 
+    }))
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+
+    app.use('/api/products', productsRouter);
+    app.use('/api/carts', cartsRouter);
+    app.use('/api/cookies', cookiesRouter);
+    app.use('/', viewsRouter);
+    app.use('/api/sessions', sessionsRouter)
+
+
+    app.engine('handlebars', handlebars.engine());
+    app.set('views', `${__dirname}/views`);
+    app.set('view engine', 'handlebars');
+
+    app.use('/static', express.static(`${__dirname}/public`));
 }catch(err){
-    console.log(`No se puede conectar con bbdd (${err.message})`);
+    console.log(`Backend: Error al inicializar, ${err.message}`)
 }
-
-app.listen(PORT, () => {
-    console.log(`Servicio arctivo en puerto ${PORT}`)
-})
-
-// const socketServer = new Server(httpServer);
-
-// socketServer.on('connection', socket => {
-//     console.log('Nuevo cliente conectado');
-
-//     socket.on('addProduct', async (newProduct) => {
-//         try {
-//             await manager1.addProduct(newProduct);
-//             console.log('Producto añadido correctamente al archivo JSON:', newProduct);
-//             socketServer.emit('productAdded', newProduct);
-//         } catch (error) {
-//             console.error('Error al agregar el producto al archivo JSON:', error);
-//         }
-//     });
-
-    
-//     socket.on('deleteProduct', async (productId) => {
-//         try {
-//             await manager1.deleteProduct(productId);
-//             console.log('Producto eliminado correctamente del archivo JSON:', productId);
-//             socketServer.emit('productDeleted', productId);
-//         } catch (error) {
-//             console.error('Error al eliminar el producto del archivo JSON:', error);
-//             socket.emit('error', { message: 'Error al eliminar el producto' });
-//         }
-//     });
-    
-// })
-
-
-
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
-app.use(cookieParser('Us3RS3cR3T'));
-app.use(session({ 
-    store: MongoStore.create({ mongoUrl: MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
-    secret: 'Us3RS3cR3T', 
-    resave: false, 
-    saveUninitialized: false 
-}))
-
-
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
-app.use('/api/cookies', cookiesRouter);
-app.use('/products', viewsRouter);
-app.use('/api/sessions', sessionsRouter)
-
-
-app.engine('handlebars', handlebars.engine());
-app.set('views', `${__dirname}/views`);
-app.set('view engine', 'handlebars');
-
-app.use('/static', express.static(`${__dirname}/public`));

@@ -7,7 +7,7 @@ router.post('/', (req, res ) => {
         res.cookie('userCookie', {user: req.body.user, email: req.body.email}, {maxAge: 50000, signed: true})
         res.status(200).send({status: 'Success', payload: 'Nueva cookie generada'})
     }catch(err){
-        res.status(500).send({status: 'error', payload: err.message});
+        res.status(400).send({status: 'error', payload: err.message});
     }
 })
 

@@ -1,42 +1,36 @@
 import { Router } from "express";
+import initPassport from '../config/passport.congif.js';
+import passport from "passport";
 
+
+
+initPassport();
 const router = Router();
 
-const auth = (req, res, next) => {
-    try{
-        if(req.session.user){
-            const { user, pass } = req.body
-            if(req.session.user.username === user && req.session.user.password === pass){
-                next();
-            }else{
-                res.status(400).send('usuario o clave incorrecto');
-            }
-        }else{
-            res.status(500).send('Usuario no registrado');
-        }
-    }catch(err){
-        res.status(500).send({status: 'err', payload: err.message});
-    }
-}
+router.get('/failregister', async (req, res) => {
+    res.status(400).send({ status: 'ERR', data: 'El email ya existe o faltan datos obligatorios' })
+})
 
-router.post('/register', (req, res) => {
-    try{
-        const { email, pass } = req.body;
+router.get('/failrestore', async(req, res) =>{
+    res.status(400).send('El mail no existe o faltan campos obligatorios')
+})
 
-        if(email === 'adminCoder@coder.com' && pass === 'adminCod3r123'){
-            req.session.user = { username: email, password: pass, admin: true };
-        }else{
-            req.session.user = {username: email, password: pass, user: true};
-        }
-        res.redirect('/products/login');
+router.get('/faillogin', async(req, res) => {
+    res.status(400).send('El mail no existe o faltan campos obligatorios');
+})
+
+router.post('/register', passport.authenticate('registerAuth', {failureRedirect: '/api/session/failregister'}), async(req, res) => {
+    try{
+        res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message});
     }
 })
 
-router.post('/login', auth, (req, res) => {
+router.post('/login', passport.authenticate('loginAuth', {failureRedirect: '/api/sessions/faillogin'}), async (req, res) => {
     try{
-        res.redirect('/products')
+        req.session.user = {username: req.user.username, admin: true}
+        res.status(200).send({status: 'Success', payload: 'Usuario logueado'})
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message});
     }
@@ -55,6 +49,28 @@ router.get('/logout', (req, res) => {
         res.status(500).send({ status: 'ERR', payload: err.message })
     }
 })
+
+router.post('/restore', passport.authenticate('restoreAuth', {failureRedirect: '/api/session/failrestore'}), async(req, res) => {
+    try{
+        res.status(200).send({status: 'success', payload: 'Contraseña actualizada'})
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message});
+    }
+})
+
+
+router.get('/github', passport.authenticate('githubAuth', { scope: ['user:email'] }), async (req, res) => {
+
+})
+
+router.get('/githubcallback', passport.authenticate('githubAuth', {failureRedirect: '/login'}), async(req, res) =>{
+    try{
+        req.session.user = {username: req.user.username, admin: true}
+        res.redirect('/products');
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})      
 
 
 export default router

@@ -1,10 +1,8 @@
 import { Router } from "express";
-// import { CartManager } from "../controllers/cartManager.controller.fs.js";
 import { CartManager } from "../dao/daoMongo/cartManager.controller.mdb.js";
 
 const router = Router();
 const controller = new CartManager();
-// const manager1 = new CartManager('./carts.json');
 
 
 router.post('/', async(req, res) => {
@@ -34,7 +32,7 @@ router.get('/:cid', async(req, res) =>{
         let cart = await controller.getCartsById(cartId);
         res.status(200).send({status: 'OK', payload: cart})
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message})
+        res.status(500).send({status: 'error', payload: err.message})
     }
 })
 
@@ -47,7 +45,7 @@ router.post('/:cid/products/:pid', async (req, res) => {
         const product = await controller.addProductToCart(cartId, productId);
         res.status(200).send({status: 'Success', payload: product})
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message})
+        res.status(500).send({status: 'error', payload: err.message})
     }
 });
 
@@ -62,10 +60,10 @@ router.put('/:cid', async(req, res) => {
         if(updateCart){
             res.status(200).send({status: 'Success', payload: updateCart});
         }else{
-            res.status(400).send({status: 'error', payload: 'El carrito no pudo ser actualizado'});
+            res.status(500).send({status: 'error', payload: 'El carrito no pudo ser actualizado'});
         }
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message});
+        res.status(500).send({status: 'error', payload: err.message});
     }
 })
 
@@ -81,10 +79,10 @@ router.put('/:cid/products/:pid', async(req, res) =>{
         if(update){
             res.status(200).send({status: 'Success', payload: update})
         }else{
-            res.status(400).send({status: 'error', payload: 'Error al actualizar el producto'});
+            res.status(500).send({status: 'error', payload: 'Error al actualizar el producto'});
         }
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message});
+        res.status(500).send({status: 'error', payload: err.message});
     }
 })
 
@@ -97,10 +95,10 @@ router.delete('/:cid/products/:pid', async (req, res) => {
         if(productRemoved){
             res.status(200).send({status: 'Success', data: 'Producto eliminado correctamente'});
         } else {
-            res.status(404).send({status: 'Error', data: 'Error al eliminar el producto o no encontrado'});
+            res.status(500).send({status: 'Error', data: 'Error al eliminar el producto o no encontrado'});
         }
     } catch(err){
-        res.status(400).send({status: 'Error', payload: err.message});
+        res.status(500).send({status: 'Error', payload: err.message});
     }
 })
 
@@ -113,10 +111,10 @@ router.delete('/:cid', async(req, res) => {
         if(deleteProducts){
             res.status(200).send({status: 'Success', payload: deleteProducts});
         }else{
-            res.status(400).send({status: 'error', payload: 'Error al eliminar los productos del carrito'});
+            res.status(500).send({status: 'error', payload: 'Error al eliminar los productos del carrito'});
         }
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message})
+        res.status(500).send({status: 'error', payload: err.message})
     }
 
 })

@@ -7,7 +7,7 @@ const router = Router();
 const productController = new ProductManager();
 const cartController = new CartManager();
 
-router.get('/', async (req, res) => {
+router.get('/products', async (req, res) => {
     try {
         if(req.session.user){
         let filter = req.query.filter;
@@ -28,10 +28,10 @@ router.get('/', async (req, res) => {
             user: req.session.user
         });
         }else{
-            res.redirect('/products/login');
+            res.redirect('/login');
         }
     } catch (err) {
-        res.status(400).send({ status: 'error', payload: err.message });
+        res.status(500).send({ status: 'error', payload: err.message });
     }
 });
 
@@ -46,12 +46,16 @@ router.get('/carts/:cid', async (req, res) => {
             cart: cart
         });
     } catch (err) {
-        res.status(400).send({status: 'error', payload: err.message});
+        res.status(500).send({status: 'error', payload: err.message});
     }
 });
 
 router.get('/chat', async(req, res) => {
-    res.render('chat', )
+    try{
+        res.render('chat', )
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
 })
 
 router.post('/save-message', async (req, res) => {
@@ -66,45 +70,44 @@ router.post('/save-message', async (req, res) => {
 });
 
 router.get('/cookies', async (req, res) => {
-    res.render('cookies', {})
+    try{
+        res.render('cookies', {})
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
 })
 
 router.get('/register', (req, res) => {
-    res.render('register', {})
+    try{
+        res.render('register', {})
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
 })
 
 router.get('/login', (req, res) =>{
-    res.render('login', {})
+    try{
+        if(req.session.user){
+            res.redirect('/products')
+        }else{
+            res.render('login')
+        }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
 })
 
-
-
-// router.get('/', async(req, res) => {
-//     try{
-//         const products = await controller.getProducts()
-//         console.log(products)
-//         res.render('home', {
-//             title: 'Lista de Productos',
-//             products: products
-//         })
-//     }catch{
-//         res.status(500).send('Error del servidor al intentar mostrar los productos')
-//     }
-// })
-
-
-// router.get('/realtimeproducts', async(req, res) => {
-//     try{
-//         const products = await manager1.getProducts()
-//         res.render('realTimeProducts', {
-//             title: 'Lista de Productos',
-//             products: products
-//         })
-//     }catch{
-//         res.status(500).send('Error del servidor al intentar mostrar los productos')
-//     }
-// })
-
+router.get('/restore', (req, res) => {
+    try{
+        if(req.session.user){
+            res.redirect('/login')
+        }else{
+            res.render('restore', {})
+        }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})
 
 
 

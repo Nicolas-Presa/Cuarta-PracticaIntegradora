@@ -1,11 +1,10 @@
 import { Router } from "express";
-// import { ProductManager } from "../controllers/productManager.controller.fs.js";
+
 import { ProductManager } from '../dao/daoMongo/productManager.controller.mdb.js'
 
 const router = Router();
 const controller = new ProductManager();
-// const manager1 = new ProductManager('./products.json');
-// const products = await manager1.getProducts();
+
 
 
 
@@ -26,12 +25,12 @@ router.get('/:pid', async(req, res) => {
         let product = await controller.getProductById(productPid);
 
         if(!product){
-            return res.status(400).send( {error: 'Producto no encontrado'} );
+            return res.status(500).send( {error: 'Producto no encontrado'} );
         }else{
             return res.status(200).send({status: 'Success', payload: product});
         }
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message})
+        res.status(500).send({status: 'error', payload: err.message})
     }
 })
 
@@ -77,12 +76,12 @@ router.delete('/:pid', async (req, res) => {
         await controller.deleteProduct(productPid);
 
         if(!productPid){
-            res.status(400).send({status: 'error', payload: 'producto no encontrado'})
+            res.status(500).send({status: 'error', payload: 'producto no encontrado'})
         }else{
             res.status(200).send({status: 'Success', payload: `Producto eliminado correctamente`});
         }
     }catch(err){
-        res.status(400).send({status: 'error', payload: err.message})
+        res.status(500).send({status: 'error', payload: err.message})
     }
 })
 

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import productModel from '../models/product.model.js'
 
 mongoose.pluralize(null);
 
