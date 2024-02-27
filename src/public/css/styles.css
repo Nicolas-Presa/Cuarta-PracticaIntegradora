@@ -5,17 +5,6 @@
     font-family: Arial, sans-serif;
 }
 
-/* .list{
-    padding-block: 5px;
-    padding-left: 10px;
-    list-style-type: decimal;
-    color: rgb(100, 100, 100);
-}
-
-.price{
-    color: rgb(0, 0, 0);
-} */
-
 /* ESTILOS DE LA PLANTILLA PRODUCTS.HANDLEBARS */
 .title{
     text-align: center;
@@ -70,33 +59,6 @@
 }
 /* ESTILOS DE LA PLANTILLA PRODUCTS.HANDLEBARS */
 
-
-
-/* ESTILOS DE LA PLANTILLA CHAT.HANDLEBARS */
-.form{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-}
-
-.formContainer{
-    padding: 10px;
-    width: 25%;
-    display: flex;
-    justify-content: center;
-    border: solid black;
-    margin: 5px;
-    border-radius: 10px;
-}
-
-.form__button{
-    background-color: beige;
-    padding: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-/* ESTILOS DE LA PLANTILLA CHAT.HANDLEBARS */
 
 /* ESTILOS DE LA PLANTILLA CART.HANDLEBARS */
 .product__cart{

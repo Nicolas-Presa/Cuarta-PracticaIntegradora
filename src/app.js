@@ -1,16 +1,15 @@
 import express from 'express'
-import productsRouter from './routes/products.routes.js';
-import cartsRouter from './routes/carts.routes.js';
-import { __dirname } from './utils.js';
-import viewsRouter from './routes/views.routes.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose';
-import cookieParser from 'cookie-parser';
-import cookiesRouter from './routes/cookies.routes.js'
 import session from 'express-session'
-import sessionsRouter from './routes/sessions.routes.js'
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
+
+import { __dirname } from './utils.js';
+import productsRouter from './routes/products.routes.js';
+import cartsRouter from './routes/carts.routes.js';
+import viewsRouter from './routes/views.routes.js'
+import sessionsRouter from './routes/sessions.routes.js'
 
 
 
@@ -30,7 +29,6 @@ try{
 
     app.use(express.urlencoded({extended: true}));
     app.use(express.json());
-    app.use(cookieParser('Us3RS3cR3T'));
     app.use(session({ 
         store: MongoStore.create({ mongoUrl: MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
         secret: 'Us3RS3cR3T', 
@@ -43,9 +41,8 @@ try{
 
     app.use('/api/products', productsRouter);
     app.use('/api/carts', cartsRouter);
-    app.use('/api/cookies', cookiesRouter);
+    app.use('/api/sessions', sessionsRouter);
     app.use('/', viewsRouter);
-    app.use('/api/sessions', sessionsRouter)
 
 
     app.engine('handlebars', handlebars.engine());
@@ -53,6 +50,12 @@ try{
     app.set('view engine', 'handlebars');
 
     app.use('/static', express.static(`${__dirname}/public`));
+
+
+    app.all('*', (req, res, next)=>{
+        res.status(404).send({ status: 'ERR', data: 'Página no encontrada' });
+    })
+    
 }catch(err){
     console.log(`Backend: Error al inicializar, ${err.message}`)
 }

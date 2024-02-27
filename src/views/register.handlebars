@@ -2,7 +2,20 @@
 
 
 <form action="/api/sessions/register" method="post">
-    <input type="email" name="user" class="email" placeholder="Escriba su Email aqui..">
-    <input type="password" name="pass" class="pass">
+    <label for="first_name">Nombre: </label>
+    <input type="text" id="first_name" name="first_name" class="last_name" placeholder="Nombre">
+
+    <label for="last_name">Apellido: </label>
+    <input type="text" id="last_name" name="last_name" class="last_name" placeholder="Apellido">
+
+    <label for="email">Email: </label>
+    <input type="email" id="email" name="email" class="email" placeholder="tumail@ejemplo.com">
+
+    <label for="age">Edad: </label>
+    <input type="number" id="age" name="age" class="age" placeholder="18">
+
+    <label for="password">Contraseña: </label>
+    <input type="password" id="pass" name="pass" class="pass" placeholder="******">
+
     <button type="submit">Crear Usuario</button>
 </form>

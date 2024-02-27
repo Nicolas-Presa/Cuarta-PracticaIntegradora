@@ -1,5 +1,4 @@
 import { Router } from "express";
-import messageModel from '../dao/models/message.model.js';
 import {ProductManager} from '../dao/daoMongo/productManager.controller.mdb.js'
 import {CartManager} from '../dao/daoMongo/cartManager.controller.mdb.js'
 
@@ -9,7 +8,7 @@ const cartController = new CartManager();
 
 router.get('/products', async (req, res) => {
     try {
-        if(req.session.user){
+        if(req.user && req.user.role === 'admin'){
         let filter = req.query.filter;
         let limit = parseInt(req.query.limit, 10) || 10;
         let page = parseInt(req.query.page, 10) || 1;
@@ -28,7 +27,7 @@ router.get('/products', async (req, res) => {
             user: req.session.user
         });
         }else{
-            res.redirect('/login');
+            res.redirect('/api/sessions/failproducts');
         }
     } catch (err) {
         res.status(500).send({ status: 'error', payload: err.message });
@@ -50,36 +49,14 @@ router.get('/carts/:cid', async (req, res) => {
     }
 });
 
-router.get('/chat', async(req, res) => {
-    try{
-        res.render('chat', )
-    }catch(err){
-        res.status(500).send({status: 'error', payload: err.message})
-    }
-})
-
-router.post('/save-message', async (req, res) => {
-    try {
-        const { user, message } = req.body;
-        const newMessage = new messageModel({ user, message });
-        await newMessage.save();
-        res.status(200).send({status: 'Success', payload: 'Mensaje guardado'});
-    } catch (error) {
-        res.status(500).send({status: 'error', payload: 'Error al guardar el mensaje'});
-    }
-});
-
-router.get('/cookies', async (req, res) => {
-    try{
-        res.render('cookies', {})
-    }catch(err){
-        res.status(500).send({status: 'error', payload: err.message})
-    }
-})
 
 router.get('/register', (req, res) => {
     try{
-        res.render('register', {})
+        if(req.user){
+            res.redirect('/profile')
+        }else{
+            res.render('register', {})
+        }
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message})
     }
@@ -87,8 +64,8 @@ router.get('/register', (req, res) => {
 
 router.get('/login', (req, res) =>{
     try{
-        if(req.session.user){
-            res.redirect('/products')
+        if(req.user){
+            res.redirect('/profile')
         }else{
             res.render('login')
         }
@@ -99,10 +76,22 @@ router.get('/login', (req, res) =>{
 
 router.get('/restore', (req, res) => {
     try{
-        if(req.session.user){
-            res.redirect('/login')
+        if(req.user){
+            res.redirect('/profile')
         }else{
             res.render('restore', {})
+        }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})
+
+router.get('/profile', (req, res) => {
+    try{
+        if(req.user){
+            res.render('profile', {user: req.user})
+        }else{
+            res.redirect('/login')
         }
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message})

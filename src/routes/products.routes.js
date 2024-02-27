@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import { ProductManager } from '../dao/daoMongo/productManager.controller.mdb.js'
 
 const router = Router();
@@ -19,7 +18,7 @@ router.get('/', async (req, res) => {
     
 })
 
-router.get('/:pid', async(req, res) => {
+router.get('/:pid([a-fA-F0-9]{24})', async(req, res) => {
     try{
         let productPid = req.params.pid;
         let product = await controller.getProductById(productPid);
@@ -50,7 +49,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.put('/:pid', async (req, res) => {
+router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
     try {
         let updateProduct = req.body;
         let productPid = req.params.pid;
@@ -70,7 +69,7 @@ router.put('/:pid', async (req, res) => {
 });
 
 
-router.delete('/:pid', async (req, res) => {
+router.delete('/:pid([a-fA-F0-9]{24})', async (req, res) => {
     try{
         const productPid = req.params.pid;
         await controller.deleteProduct(productPid);

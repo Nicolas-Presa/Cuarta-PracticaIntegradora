@@ -8,17 +8,19 @@ import GithubStrategy from 'passport-github2';
 const initPassport = () => {
     const verifyRegistration = async (req, username, password, done) => {
         try{
-            const user = await userModel.findOne({username: username})
+            const user = await userModel.findOne({email: username})
 
             if(user){
                 return done('Ya hay un usuario registrado con este mail', false)
             }
 
             const newUser = {
-                username: username,
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+                email: username,
+                age: req.body.age,
                 password: createHash(password)
             }
-
             const process = await userModel.create(newUser)
             return done(null, process)
         }catch(err){
@@ -28,18 +30,18 @@ const initPassport = () => {
 
     passport.use('registerAuth', new LocalStrategy({
         passReqToCallback: true,
-        usernameField: 'user',
+        usernameField: 'email',
         passwordField: 'pass'
     }, verifyRegistration))
 
 
     const verifyRestoration = async(req, username, password, done) => {
         try{
-            const user = await userModel.findOne({ username: email })
+            const user = await userModel.findOne({ email: username })
 
             if (!user) return done('No existe un usuario registrado con este mail', false)
 
-            const newPassword = await userModel.findOneAndUpdate({username: email}, {password: createHash(password)})
+            const newPassword = await userModel.findOneAndUpdate({email: username}, {password: createHash(password)})
 
             return done(null, newPassword);
         }catch(err){
@@ -49,20 +51,19 @@ const initPassport = () => {
 
     passport.use('restoreAuth', new LocalStrategy({
         passReqToCallback: true,
-        usernameField: 'user',
+        usernameField: 'email',
         passwordField: 'pass'
     }, verifyRestoration))
 
 
     const verifyLogin = async(req, username, password, done) =>{
-        const user = await userModel.findOne({username: username})
+        const user = await userModel.findOne({email: username})
 
         if(!user){
-            return done('No existe un usuario con este email', false)
+            return done('Usuario o contraseña incorrecta', false)
         }
 
         if(user !== null && isValidPassword(user, password)){
-            req.session.user = {username: username, admin: true}
             return done(null, user)
         }else{
             return done('error en passport local', false)
@@ -71,14 +72,14 @@ const initPassport = () => {
 
     passport.use('loginAuth', new LocalStrategy({
         passReqToCallback: true,
-        usernameField: 'user',
+        usernameField: 'email',
         passwordField: 'pass'
     }, verifyLogin))
 
 
     const verifyGithub = async(accessToken, refreshToken, profile, done) => {
         try{
-            const user = await userModel.findOne({username: profile._json.email})
+            const user = await userModel.findOne({email: profile._json.email})
             if(!user){
                 const newUser = {
                     username: `${profile._json.login}@gmail.com`,
@@ -108,7 +109,7 @@ const initPassport = () => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            done(null, await userModel.findById(id))
+            done(null, await userModel.findById(id).lean())
         } catch (err) {
             done(err.message)
         }

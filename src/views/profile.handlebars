@@ -1,0 +1,10 @@
+<h1>Perfil de usuario</h1>
+
+
+<h2>Bienvenido {{ user.first_name }} {{ user.last_name }} </h2>
+<p>Usuario {{ user.role }} </p>
+
+
+<form action="/api/sessions/logout" method="get">
+    <button type="submit">Cerrar Sesion</button>
+</form>
