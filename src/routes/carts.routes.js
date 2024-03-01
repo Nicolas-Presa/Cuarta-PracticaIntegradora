@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CartManager } from "../dao/daoMongo/cartManager.controller.mdb.js";
+import { CartManager } from "../dao/daoMongo/cart.controller.mdb.js";
 
 const router = Router();
 const controller = new CartManager();

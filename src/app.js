@@ -1,24 +1,25 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
-import mongoose from 'mongoose';
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
+import cors from 'cors';
 
 import { __dirname } from './utils.js';
+import config from './config.js'
 import productsRouter from './routes/products.routes.js';
 import cartsRouter from './routes/carts.routes.js';
 import viewsRouter from './routes/views.routes.js'
 import sessionsRouter from './routes/sessions.routes.js'
+import MongoSingleton from './services/mongo.singleton.js';
 
 
 
-const PORT = 8080;
-const MONGOOSE_URL = 'mongodb+srv://ecommerce:coder2024@cluster0.cjhgsxo.mongodb.net/ecommerce';
+const PORT = config.PORT;
 
 
 try{
-    await mongoose.connect(MONGOOSE_URL)
+    MongoSingleton.getInstance()
     const app = express();
 
 
@@ -26,11 +27,15 @@ try{
         console.log(`Servicio arctivo en puerto ${PORT}`)
     })
 
+    app.use(cors({
+        origin: '*',
+        methods: 'GET,POST,PUT,PATCH,DELETE'
+    }));
 
     app.use(express.urlencoded({extended: true}));
     app.use(express.json());
     app.use(session({ 
-        store: MongoStore.create({ mongoUrl: MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
+        store: MongoStore.create({ mongoUrl: config.MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
         secret: 'Us3RS3cR3T', 
         resave: false, 
         saveUninitialized: false 

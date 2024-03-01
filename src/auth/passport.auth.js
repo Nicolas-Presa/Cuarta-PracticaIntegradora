@@ -3,6 +3,7 @@ import LocalStrategy from 'passport-local';
 import userModel from '../dao/models/user.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GithubStrategy from 'passport-github2';
+import config from '../config.js'
 
 
 const initPassport = () => {
@@ -97,9 +98,9 @@ const initPassport = () => {
     }
 
     passport.use('githubAuth', new GithubStrategy({
-        clientID: 'Iv1.8d450c33842d72eb',
-        clientSecret: 'ffaa53b457786c783f05daafb9f95e79d95bd073',
-        callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
+        clientID: config.GITHUB_AUTH.clientId,
+        clientSecret: config.GITHUB_AUTH.clientSecret,
+        callbackURL: config.GITHUB_AUTH.callbackUrl
     }, verifyGithub))
 
     passport.serializeUser((user, done) => {

@@ -1,9 +1,11 @@
-import cartModel from '../models/cart.model.js'
+import cartModel from '../dao/models/cart.model.js'
 
-class CartManager{
+
+class CartServices {
     constructor(){}
 
-    addCart = async(newCart) => {
+
+    addCartServices = async(newCart) => {
         try{
             const cart = await cartModel.create(newCart)
             return cart
@@ -12,7 +14,7 @@ class CartManager{
         }
     }
 
-    getCarts = async() => {
+    getCartsServices = async() => {
         try{
             const carts = await cartModel.find().lean()
             return carts
@@ -21,7 +23,7 @@ class CartManager{
         }
     }
 
-    getCartsById = async(id) => {
+    getCartsByIdServices = async(id) => {
         try {
             const cart = await cartModel.findById(id).populate('products.productId').lean();
             return cart;
@@ -30,7 +32,7 @@ class CartManager{
         }
     };
     
-    async addProductToCart(cartId, newProduct) {
+    async addProductToCartServices(cartId, newProduct) {
         try{
             const cart = await cartModel.findById(cartId);
             if(!cart){
@@ -53,7 +55,7 @@ class CartManager{
     }
 
 
-    async deleteProductToCart(cartId, productId) {
+    async deleteProductToCartServices(cartId, productId) {
         try{
             const cart = await cartModel.findById(cartId);
             if(!cart){
@@ -78,7 +80,7 @@ class CartManager{
         }
     }
 
-    async updateCart(cartId, arrayProducts) { 
+    async updateCartServices(cartId, arrayProducts) { 
         try{
             const updateCart = await cartModel.findByIdAndUpdate(
                 cartId,
@@ -91,7 +93,7 @@ class CartManager{
         }
     }
 
-    async updateCartProduct(cartId, productId, newQuantity) {
+    async updateCartProductServices(cartId, productId, newQuantity) {
         try{
             const updateCartProduct = await cartModel.findOneAndUpdate(
                 { _id: cartId, 'products.productId': productId },
@@ -106,7 +108,7 @@ class CartManager{
     
 
 
-    async deleteProducts(cartId) {
+    async deleteProductsServices(cartId) {
         try{
             const deleteProducts = await cartModel.findByIdAndUpdate(
                 cartId,
@@ -121,5 +123,4 @@ class CartManager{
 }
 
 
-
-export { CartManager }
+export { CartServices }

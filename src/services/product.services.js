@@ -1,9 +1,9 @@
-import productModel from '../models/product.model.js'
+import productModel from '../dao/models/product.model.js'
 
-class ProductManager{
+class ProductServices {
     constructor(){}
 
-    async addProduct(product) {
+    async addProductServices(product) {
         try{
             productModel.create(product)
             return 'Product agregado'
@@ -12,7 +12,7 @@ class ProductManager{
         }
     }
 
-    getProducts = async (filter, limit, page, sort = 'asc') => {
+    async getProductsServices(filter, limit, page, sort = 'asc'){
         try {
             const sortOrder = sort === 'asc' ? 1 : sort === 'desc' ? -1 : undefined;
 
@@ -34,11 +34,9 @@ class ProductManager{
         } catch (err) {
             return err.message;
         }
-    };
-    
-    
+    }
 
-    getProductById = async (id) => {
+    async getProductsByIdServices(id) {
         try{
             const product = productModel.findById(id)
             return product
@@ -46,10 +44,10 @@ class ProductManager{
             return err.message
         }
     }
-    
-    async updateProduct(id, newData) {
+
+    async updateProductServices(id, newData) {
         try{
-            const product = productModel.findByIdAndUpdate(id, newData)
+            const product = await productModel.findByIdAndUpdate(id, newData)
             return product
         }catch(err){
             return err.message
@@ -58,7 +56,7 @@ class ProductManager{
 
     deleteProduct = async (id) => {
         try{
-            const product = productModel.findByIdAndDelete(id)
+            const product = await productModel.findByIdAndDelete(id)
             return product
         }catch(err){
             err.message
@@ -66,4 +64,5 @@ class ProductManager{
     }
 }
 
-export {ProductManager}
+
+export { ProductServices }
