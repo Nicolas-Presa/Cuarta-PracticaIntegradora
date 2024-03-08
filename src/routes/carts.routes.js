@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { CartManager } from "../dao/daoMongo/cart.controller.mdb.js";
+import { CartManager } from "../controllers/cart.controller.mdb.js";
+import handlePolicies from "../auth/policies.auth.js";
 
 const router = Router();
 const controller = new CartManager();
@@ -37,7 +38,7 @@ router.get('/:cid([a-fA-F0-9]{24})', async(req, res) =>{
 })
 
 
-router.post('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.post('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', handlePolicies(['USER']), async (req, res) => {
     try{
         const cartId = req.params.cid;
         const productId = req.params.pid
@@ -116,7 +117,18 @@ router.delete('/:cid([a-fA-F0-9]{24})', async(req, res) => {
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message})
     }
+})
 
+
+router.get('/:cid/purchase', handlePolicies(['USER']), async(req, res) => {
+    try{
+        const cartId = req.params.cid;
+        const userEmail = req.user.email;
+        const cart = await controller.processPurchase(cartId, userEmail);
+        res.status(200).send({status: 'Success', payload: cart});
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message});
+    }
 })
 
 export default router

@@ -1,26 +1,12 @@
 import { Router } from "express";
 import initPassport from '../auth/passport.auth.js';
 import passport from "passport";
+import handlePolicies from '../auth/policies.auth.js'
 
 
 
 initPassport();
 const router = Router();
-
-const handlePolicies = policies => {
-    return async (req, res, next) => {
-        if (!req.user) return res.status(401).send({ status: 'ERR', data: 'Usuario no autorizado' });
-
-        const userRole = req.user.role.toUpperCase();
-        const normalizedPolicies = policies.map(policy => policy.toUpperCase());
-
-        if (normalizedPolicies.includes(userRole)) {
-            return next();
-        } else {
-            return res.status(403).send({ status: 'ERR', data: 'Sin permisos suficientes' });
-        }
-    }
-};
 
 
 router.get('/failregister', async (req, res) => {
@@ -93,7 +79,8 @@ router.get('/githubcallback', passport.authenticate('githubAuth', {failureRedire
 router.get('/current', handlePolicies(['ADMIN']), (req, res) => {
     try{
         if(req.user){
-            res.status(200).send({status: 'Success', payload: req.user})
+        const {_id, first_name, last_name, __v, password, ...user} = req.user;
+        res.status(200).send({status: 'Success', payload: user})
         }else{
             res.redirect('/login')
         }

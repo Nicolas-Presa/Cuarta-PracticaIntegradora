@@ -1,4 +1,4 @@
-import { ProductServices } from '../../services/product.services.js'
+import { ProductServices } from '../services/product.mongo.dao.js'
 
 const services = new ProductServices();
 

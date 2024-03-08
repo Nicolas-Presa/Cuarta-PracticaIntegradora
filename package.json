@@ -5,7 +5,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/app --port=8080 --mode=development"
+    "dev": "nodemon src/app --mode=devel",
+    "start": "node src/app --mode=prod"
   },
   "keywords": [],
   "author": "",

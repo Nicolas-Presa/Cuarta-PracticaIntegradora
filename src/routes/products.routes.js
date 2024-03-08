@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { ProductManager } from '../dao/daoMongo/product.controller.mdb.js'
+import { ProductManager } from '../controllers/product.controller.mdb.js'
+import handlePolicies from '../auth/policies.auth.js'
+import { ProductDTO } from "../repositories/products.repository.js";
 
 const router = Router();
 const controller = new ProductManager();
-
-
 
 
 router.get('/', async (req, res) => {
@@ -38,10 +38,16 @@ router.post('/', async (req, res) => {
         const { title, description, code, price, status, stock, category, thumbnails } = req.body
         
         if(!title || !description || !code || !price || !status || !stock || !category || !thumbnails){
+
             res.status(400).send({status: 'error', data: 'Faltan completar campos'})
+            
         }else{
-            const newContent = { title, description, code, price, status, stock, category, thumbnails}
-            const result = await controller.addProduct(newContent)
+
+            const newContent = { title, description, code, price, status, stock, category, thumbnails};
+            const normalizedProduct = new ProductDTO(newContent);
+            const productComplete = normalizedProduct.getProduct();
+            const result = await controller.addProduct(productComplete);
+
             res.status(200).send({status: 'Success', data: result})
         }
     }catch(err){
@@ -49,7 +55,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.put('/:pid([a-fA-F0-9]{24})', handlePolicies(['ADMIN']), async (req, res) => {
     try {
         let updateProduct = req.body;
         let productPid = req.params.pid;
@@ -69,7 +75,7 @@ router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
 });
 
 
-router.delete('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.delete('/:pid([a-fA-F0-9]{24})', handlePolicies(['ADMIN']), async (req, res) => {
     try{
         const productPid = req.params.pid;
         await controller.deleteProduct(productPid);

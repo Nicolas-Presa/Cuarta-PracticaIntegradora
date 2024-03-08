@@ -5,12 +5,12 @@ import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import cors from 'cors';
 
-import { __dirname } from './utils.js';
 import config from './config.js'
 import productsRouter from './routes/products.routes.js';
 import cartsRouter from './routes/carts.routes.js';
-import viewsRouter from './routes/views.routes.js'
-import sessionsRouter from './routes/sessions.routes.js'
+import viewsRouter from './routes/views.routes.js';
+import sessionsRouter from './routes/sessions.routes.js';
+import messagesRouter from './routes/messages.routes.js'
 import MongoSingleton from './services/mongo.singleton.js';
 
 
@@ -47,14 +47,15 @@ try{
     app.use('/api/products', productsRouter);
     app.use('/api/carts', cartsRouter);
     app.use('/api/sessions', sessionsRouter);
+    app.use('/api/messages', messagesRouter);
     app.use('/', viewsRouter);
 
 
     app.engine('handlebars', handlebars.engine());
-    app.set('views', `${__dirname}/views`);
+    app.set('views', `${config.__DIRNAME}/views`);
     app.set('view engine', 'handlebars');
 
-    app.use('/static', express.static(`${__dirname}/public`));
+    app.use('/static', express.static(`${config.__DIRNAME}/public`));
 
 
     app.all('*', (req, res, next)=>{

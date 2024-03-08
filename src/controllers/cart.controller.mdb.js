@@ -1,4 +1,4 @@
-import { CartServices } from '../../services/cart.services.js'
+import { CartServices } from '../services/cart.mongo.dao.js'
 
 const services = new CartServices()
 
@@ -71,7 +71,17 @@ class CartManager{
             return err.message
         }
     }
+
+
+    async processPurchase(cartId, userEmail) {
+        try{
+            return await services.processTicket(cartId, userEmail)
+        }catch(err){
+            return err.message
+        }
+    }
 }
+
 
 
 

@@ -1,3 +1,4 @@
+import * as url from 'url'
 import { Command } from 'commander';
 import dotenv from 'dotenv';
 
@@ -13,9 +14,21 @@ commandLineOptions
 commandLineOptions.parse()
 
 
+switch (commandLineOptions.opts().mode) {
+    case 'prod':
+        dotenv.config({ path: './.prod.env'});
+        break;
+    
+    case 'devel':
+    default:
+        dotenv.config({ path: './.devel.env'});
+}
+
 
 const config = {
-    PORT: commandLineOptions.opts().port || process.env.PORT || 5000,
+    PORT: commandLineOptions.opts().port || process.env.PORT || 3000,
+    __FILNAME: url.fileURLToPath(import.meta.url),
+    __DIRNAME: url.fileURLToPath(new URL('.', import.meta.url)),
     MONGOOSE_URL: process.env.MONGOOSE_URL,
     SESSION_SECRET: process.env.SESSION_SECRET,
     GITHUB_AUTH: {

@@ -1,10 +1,10 @@
 import passport from "passport";
 import LocalStrategy from 'passport-local';
-import userModel from '../dao/models/user.model.js';
+import userModel from '../models/user.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GithubStrategy from 'passport-github2';
 import config from '../config.js'
-
+import { UserDTO } from "../repositories/users.repository.js";
 
 const initPassport = () => {
     const verifyRegistration = async (req, username, password, done) => {
@@ -22,7 +22,11 @@ const initPassport = () => {
                 age: req.body.age,
                 password: createHash(password)
             }
-            const process = await userModel.create(newUser)
+
+            const normalizedUser = new UserDTO(newUser); 
+            const saveUser = normalizedUser.getUser();
+            const process = await userModel.create(saveUser);
+
             return done(null, process)
         }catch(err){
             return done('error passport local', err.message)

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import {ProductManager} from '../dao/daoMongo/product.controller.mdb.js'
-import {CartManager} from '../dao/daoMongo/cart.controller.mdb.js'
+import {ProductManager} from '../controllers/product.controller.mdb.js'
+import {CartManager} from '../controllers/cart.controller.mdb.js'
 
 const router = Router();
 const productController = new ProductManager();
@@ -90,6 +90,18 @@ router.get('/profile', (req, res) => {
     try{
         if(req.user){
             res.render('profile', {user: req.user})
+        }else{
+            res.redirect('/login')
+        }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})
+
+router.get('/message', async(req, res) =>{
+    try{
+        if(req.user){
+            res.render('messages', {user: req.user})
         }else{
             res.redirect('/login')
         }
