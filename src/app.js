@@ -1,17 +1,18 @@
-import express from 'express'
-import handlebars from 'express-handlebars'
+import express from 'express';
+import handlebars from 'express-handlebars';
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import cors from 'cors';
 
-import config from './config.js'
+import config from './config.js';
 import productsRouter from './routes/products.routes.js';
 import cartsRouter from './routes/carts.routes.js';
 import viewsRouter from './routes/views.routes.js';
 import sessionsRouter from './routes/sessions.routes.js';
 import messagesRouter from './routes/messages.routes.js'
 import MongoSingleton from './services/mongo.singleton.js';
+import errorsDictionary from './services/error.dictionary.js';
 
 
 
@@ -57,9 +58,13 @@ try{
 
     app.use('/static', express.static(`${config.__DIRNAME}/public`));
 
+    app.use((err, req, res, next) => {
+        const code = err.code || 500;
+        res.status(code).send({status: 'error', payload: err.message})
+    }); 
 
     app.all('*', (req, res, next)=>{
-        res.status(404).send({ status: 'ERR', data: 'Página no encontrada' });
+        res.status(404).send({ status: 'error', payload: errorsDictionary.PAGE_NOT_FOUND.message });
     })
     
 }catch(err){

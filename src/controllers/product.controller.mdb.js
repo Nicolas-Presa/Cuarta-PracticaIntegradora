@@ -41,9 +41,17 @@ class ProductManager{
 
     deleteProduct = async (id) => {
         try{
-            return await services.deleteProduct(id)
+            return await services.deleteProductServices(id)
         }catch(err){
             err.message
+        }
+    }
+
+    generateMockProducts = async(qty) => {
+        try{
+            return await services.generateMockProductServices(qty)
+        }catch(err){
+            return err.message
         }
     }
 }

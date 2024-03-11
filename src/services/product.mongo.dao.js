@@ -1,4 +1,5 @@
-import productModel from '../models/product.model.js'
+import productModel from '../models/product.model.js';
+import { faker } from '@faker-js/faker';
 
 class ProductServices {
     constructor(){}
@@ -54,12 +55,38 @@ class ProductServices {
         }
     }
 
-    deleteProduct = async (id) => {
+    deleteProductServices = async (id) => {
         try{
             const product = await productModel.findByIdAndDelete(id)
             return product
         }catch(err){
-            err.message
+            return err.message
+        }
+    }
+
+    generateMockProductServices(qty){
+        try{
+            const mockProducts = [];
+            const possibleCategory = ['remera' , 'pantalon', 'campera']
+
+            for(let i = 0; i < qty; i++){
+                const product = {
+                    _id: faker.database.mongodbObjectId(),
+                    title: faker.commerce.productName(),
+                    description: faker.commerce.productDescription(),
+                    code: faker.string.binary({ length: 10 }),
+                    price: faker.commerce.price(),
+                    status: faker.datatype.boolean(0.9),
+                    stock: faker.number.octal({ min: 0, max: 80 }),
+                    category: faker.helpers.arrayElement(Object.values(possibleCategory)),
+                    thumbnails: faker.datatype.boolean(0.0)
+                };
+                mockProducts.push(product)
+            }
+            return mockProducts
+
+        }catch(err){
+            return err.message
         }
     }
 }
