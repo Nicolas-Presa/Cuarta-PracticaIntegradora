@@ -10,6 +10,7 @@ router.post('/', async(req, res) => {
     try{
         const newcart = req.body;
         const cart = await controller.addCart(newcart);
+
         res.status(200).send({status: 'OK', payload: cart });
     }catch(err){
         res.status(400).send({status: 'error', payload: err.message})
@@ -38,12 +39,14 @@ router.get('/:cid([a-fA-F0-9]{24})', async(req, res) =>{
 })
 
 
-router.post('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', handlePolicies(['USER']), async (req, res) => {
+router.post('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res) => {
     try{
         const cartId = req.params.cid;
         const productId = req.params.pid
 
         const product = await controller.addProductToCart(cartId, productId);
+
+        req.logger.info('Se acaba de añadir un nuevo producto al carrito')
         res.status(200).send({status: 'Success', payload: product})
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message})
@@ -59,6 +62,7 @@ router.put('/:cid([a-fA-F0-9]{24})', async(req, res) => {
         const updateCart = await controller.updateCart(idCart, products);
 
         if(updateCart){
+            req.logger.info('El carrito esta siendo actualizado');
             res.status(200).send({status: 'Success', payload: updateCart});
         }else{
             res.status(500).send({status: 'error', payload: 'El carrito no pudo ser actualizado'});
@@ -78,6 +82,7 @@ router.put('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async(req, r
         const update = await controller.updateCartProduct(cartId, productId, quantity);
 
         if(update){
+            req.logger.info('Se acaba de ejecutar una acciona que podria modificar la estructura del carrito')
             res.status(200).send({status: 'Success', payload: update})
         }else{
             res.status(500).send({status: 'error', payload: 'Error al actualizar el producto'});
@@ -110,6 +115,7 @@ router.delete('/:cid([a-fA-F0-9]{24})', async(req, res) => {
         const deleteProducts = await controller.deleteProducts(cartId);
 
         if(deleteProducts){
+            req.logger.info('Se ejecuto una accion que elimina el carrito completamente y su contenido')
             res.status(200).send({status: 'Success', payload: deleteProducts});
         }else{
             res.status(500).send({status: 'error', payload: 'Error al eliminar los productos del carrito'});

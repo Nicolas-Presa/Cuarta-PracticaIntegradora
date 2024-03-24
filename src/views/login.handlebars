@@ -1,15 +1,20 @@
-<h1>LOGIN</h1>
+<h1 class="title_login">LOGIN</h1>
 
-<form action="/api/sessions/login" method="post" style="margin-top: 24px ;">
-    <input type="text" name="email" class="user" placeholder="Nombre de usuario..">
-    <input type="password" name="pass" class="pass">
-    <button type="submit"> Ingresar </button>
-</form>
 
-<form action="/register" method="get">
-    <button type="submit">No tengo Usuario - Registrarme</button>
-</form>
+    <form class="container_login" action="/api/sessions/login" method="post">
+        <input type="text" name="email" class="user" placeholder="Nombre de usuario..">
+        <input type="password" name="pass" class="pass" placeholder="******">
+        <button type="submit"> Ingresar </button>
+    </form>
 
-<form action="/api/sessions/github" method="get">
-    <button type="submit">Ingresar con Github</button>
-</form>
+    <form class="container_login" action="/register" method="get">
+        <button type="submit">No tengo Usuario - Registrarme</button>
+    </form>
+
+    <form class="container_login" action="/api/sessions/github" method="get">
+        <button type="submit">Ingresar con Github</button>
+    </form>
+
+    <form action="/restore" class="container_login button_restore">
+        <button type="submit"> Olvide mi contraseña </button>
+    </form>

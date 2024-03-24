@@ -27,6 +27,7 @@ switch (commandLineOptions.opts().mode) {
 
 const config = {
     PORT: commandLineOptions.opts().port || process.env.PORT || 3000,
+    MODE: commandLineOptions.opts().mode || 'devel',
     __FILNAME: url.fileURLToPath(import.meta.url),
     __DIRNAME: url.fileURLToPath(new URL('.', import.meta.url)),
     MONGOOSE_URL: process.env.MONGOOSE_URL,

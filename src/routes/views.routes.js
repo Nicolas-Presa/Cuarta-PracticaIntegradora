@@ -24,8 +24,9 @@ router.get('/products', async (req, res) => {
             
             title: 'Productos',
             products: products,
-            user: req.session.user
+            user: req.user
         });
+        console.log(req.user);
         }else{
             res.redirect('/api/sessions/failproducts');
         }

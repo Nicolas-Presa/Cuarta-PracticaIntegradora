@@ -1,10 +1,8 @@
-    {{#if user.admin}}
-        <h2>Bienvenido usuario Administrador {{ user.username }} </h2>
-    {{/if}}
-
-    {{#if user.user }}
-        <h2>Bienvenido usuario {{ user.username }}</h2>
-    {{/if}}
+{{#if (eq user.role 'admin')}}
+    <h2>Bienvenido usuario Administrador {{ user.full_name }}</h2>
+{{else}}
+    <h2>Bienvenido usuario {{ user.full_name }}</h2>
+{{/if}}
 
 <form action="/profile" method="get">
     <button type="submit" class="button__logout">Mi perfil</button>
@@ -37,7 +35,30 @@
             <h1 class="product__itle"> {{ this.title }} </h1>
             <p class="product__description">Talle: {{ this.description }} </p>
             <span class="product__price"> $ {{ this.price }} </span>
-            <button class="product__button">Agregar al carrito</button>
+            <form action="/api/carts/{{../user.cartId}}/products/{{this._id}}" method="post">
+                <button class="product__button">Agregar al carrito</button>
+            </form>
+            {{#if (eq ../user.role 'admin')}}
+                <button onclick="deleteProduct('{{this._id}}')">Eliminar Producto</button>
+            {{/if}}
         </div>
     {{/each}}
 </div>
+
+
+<script>
+    function deleteProduct(productId) {
+fetch(`/api/products/${productId}`, {
+    method: 'DELETE',
+})
+.then(response => {
+    if (response.ok) {
+    console.log('Producto eliminado correctamente');
+    window.location.reload();
+    } else {
+    console.error('Hubo un problema con la solicitud de eliminación');
+    }
+})
+.catch(error => console.error('Error:', error));
+}
+</script>

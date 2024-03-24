@@ -25,7 +25,9 @@ router.get('/failproducts', async(req, res) => {
     res.status(400).send('Usuario no logueado o rol insuficiente para ingresar a esta venana');
 })
 
-router.post('/register', passport.authenticate('registerAuth', {failureRedirect: '/api/session/failregister'}), async(req, res) => {
+
+
+router.post('/register', passport.authenticate('registerAuth', {failureRedirect: '/api/sessions/failregister'}), async(req, res) => {
     try{
         res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
     }catch(err){
@@ -35,6 +37,7 @@ router.post('/register', passport.authenticate('registerAuth', {failureRedirect:
 
 router.post('/login', passport.authenticate('loginAuth', {failureRedirect: '/api/sessions/faillogin'}), async (req, res) => {
     try{
+        req.logger.warning('Se genero un logueo del usuario');
         res.status(200).send({status: 'Success', payload: 'Usuario logueado'})
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message});
@@ -57,6 +60,7 @@ router.get('/logout', (req, res) => {
 
 router.post('/restore', passport.authenticate('restoreAuth', {failureRedirect: '/api/session/failrestore'}), async(req, res) => {
     try{
+        req.logger.warning('Se genero un cambio de contraseña');
         res.status(200).send({status: 'success', payload: 'Contraseña actualizada'})
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message});

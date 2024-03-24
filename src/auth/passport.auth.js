@@ -5,10 +5,13 @@ import { createHash, isValidPassword } from '../utils.js';
 import GithubStrategy from 'passport-github2';
 import config from '../config.js'
 import { UserDTO } from "../repositories/users.repository.js";
+import cartModel from '../models/cart.model.js'
 
 const initPassport = () => {
     const verifyRegistration = async (req, username, password, done) => {
         try{
+            const {first_name, last_name, age} = req.body
+
             const user = await userModel.findOne({email: username})
 
             if(user){
@@ -22,12 +25,15 @@ const initPassport = () => {
                 age: req.body.age,
                 password: createHash(password)
             }
-
-            const normalizedUser = new UserDTO(newUser); 
+            const normalizedUser = new UserDTO(newUser);
             const saveUser = normalizedUser.getUser();
-            const process = await userModel.create(saveUser);
+            
+            let createUser = await userModel.create(saveUser);
+            const newCart = await cartModel.create({products: [], total: 0});
+            createUser = await userModel.findByIdAndUpdate(createUser._id, { $set: { cartId: newCart._id } }, { new: true }); 
 
-            return done(null, process)
+
+            return done(null, createUser)
         }catch(err){
             return done('error passport local', err.message)
         }

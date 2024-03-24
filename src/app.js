@@ -13,7 +13,8 @@ import sessionsRouter from './routes/sessions.routes.js';
 import messagesRouter from './routes/messages.routes.js'
 import MongoSingleton from './services/mongo.singleton.js';
 import errorsDictionary from './services/error.dictionary.js';
-
+import addLogger from './services/winston.logger.js';
+import loggerRouter from './routes/logger.routes.js'
 
 
 const PORT = config.PORT;
@@ -44,7 +45,9 @@ try{
     app.use(passport.initialize());
     app.use(passport.session());
 
+    app.use(addLogger);
 
+    app.use('/api/logger', loggerRouter);
     app.use('/api/products', productsRouter);
     app.use('/api/carts', cartsRouter);
     app.use('/api/sessions', sessionsRouter);
@@ -52,7 +55,7 @@ try{
     app.use('/', viewsRouter);
 
 
-    app.engine('handlebars', handlebars.engine());
+    app.engine('handlebars', handlebars.engine({helpers: {eq: (v1, v2) => v1 === v2,}}));
     app.set('views', `${config.__DIRNAME}/views`);
     app.set('view engine', 'handlebars');
 

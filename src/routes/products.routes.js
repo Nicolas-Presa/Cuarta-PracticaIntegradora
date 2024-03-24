@@ -39,9 +39,11 @@ router.post('/', async (req, res, next) => {
             const normalizedProduct = new ProductDTO(newContent);
             const productComplete = normalizedProduct.getProduct();
             const result = await controller.addProduct(productComplete);
+            req.logger.info(`el usuario acaba de agregar ${JSON.stringify(productComplete, null, 2)}`);
 
             res.status(200).send({status: 'Success', payload: result})
         }else{
+            req.logger.error('Parametros insuficientes')
             return next(new CustomError(errorsDictionary.FEW_PARAMETERS));
         }
     })
@@ -51,15 +53,18 @@ router.post('/', async (req, res, next) => {
         let productPid = req.params.pid;
 
         if(!updateProduct && !productPid){
-            return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
+            req.logger.error('Parametros insuficientes');
+            return next(new CustomError(errorsDictionary.FEW_PARAMETERS));
         }
 
         await controller.updateProduct(productPid, updateProduct);
         const newProduct = await controller.getProductById(productPid);
 
         if(newProduct){
+            req.logger.info(`el usuario acaba de modificar ${JSON.stringify(newProduct, null, 2)}`);
             res.status(200).send({status: 'Success', data: newProduct});
         }else{
+            req.logger.info('el ID debe coincidir con el otorgado por mongoDB')
             return next(new CustomError(errorsDictionary.ID_NOT_FOUND))
         }
 });
@@ -71,6 +76,7 @@ router.delete('/:pid([a-fA-F0-9]{24})', handlePolicies(['ADMIN']), async (req, r
         await controller.deleteProduct(productPid);
 
         if(productPid){
+            req.logger.warning(`el usuario acaba de eliminar ${JSON.stringify(productPid, null, 2)}`);
             res.status(200).send({status: 'Success', payload: `Producto eliminado correctamente`});
         }else{
             return next(new CustomError(errorsDictionary.ID_NOT_FOUND))

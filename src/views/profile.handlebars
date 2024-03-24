@@ -4,7 +4,15 @@
 <h2>Bienvenido {{ user.first_name }} {{ user.last_name }} </h2>
 <p>Usuario {{ user.role }} </p>
 
+<form action="/products">
+    <button type="submit"> Ver Productos </button>
+</form>
+
+<form action="/carts/{{user.cartId}}">
+    <button type="submit"> Ver mi carrito </button>
+</form>
+
 
 <form action="/api/sessions/logout" method="get">
-    <button type="submit">Cerrar Sesion</button>
+    <button type="submit"> Cerrar Sesion </button>
 </form>
