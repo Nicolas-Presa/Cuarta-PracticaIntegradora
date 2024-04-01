@@ -15,6 +15,7 @@
         <button type="submit">Ingresar con Github</button>
     </form>
 
-    <form action="/restore" class="container_login button_restore">
+    <form action="/api/sessions/sendemail" method="post" class="container_login button_restore">
+        <input type="text" name="email", placeholder="email aqui en caso de restablecer contraseña">
         <button type="submit"> Olvide mi contraseña </button>
     </form>

@@ -29,9 +29,9 @@ class CartManager{
         }
     };
     
-    async addProductToCart(cartId, newProduct) {
+    async addProductToCart(cartId, newProduct, email) {
         try{
-            return await services.addProductToCartServices(cartId, newProduct)
+            return await services.addProductToCartServices(cartId, newProduct, email)
         }catch(err){
             return err.message
         }
@@ -75,7 +75,7 @@ class CartManager{
 
     async processPurchase(cartId, userEmail) {
         try{
-            return await services.processTicket(cartId, userEmail)
+            return await services.processPurchase(cartId, userEmail)
         }catch(err){
             return err.message
         }

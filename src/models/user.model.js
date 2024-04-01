@@ -12,7 +12,7 @@ const schema = mongoose.Schema({
     age: {type: Number, required: false},
     password: {type: String, required: true},
     cartId: {type: mongoose.Schema.Types.ObjectId, ref: 'cart', required: false},
-    role: {type: String, enum: ['user', 'admin'], default: 'user'}
+    role: {type: String, enum: ['user', 'premium', 'admin'], default: 'user'}
 })
 
 export default mongoose.model(collection, schema);

@@ -1,5 +1,7 @@
 import productModel from '../models/product.model.js';
 import { faker } from '@faker-js/faker';
+import CustomError from '../services/error.custom.class.js';
+import errorsDictionary from "../services/error.dictionary.js";
 
 class ProductServices {
     constructor(){}
@@ -55,13 +57,36 @@ class ProductServices {
         }
     }
 
-    deleteProductServices = async (id) => {
+    deleteProductServices = async (id, email, role) => {
         try{
-            const product = await productModel.findByIdAndDelete(id)
-            return product
+            const product = await productModel.findById(id)
+            if(!product) throw new CustomError(errorsDictionary.INVALID_PARAMETER)
+
+            if(product.owner === email || role === 'admin'){
+                const deleteProduct = await productModel.findByIdAndDelete(id)
+                return deleteProduct
+            }else{
+                throw new CustomError(errorsDictionary.INVALID_ROLE)
+            }
         }catch(err){
             return err.message
         }
+
+
+        // try{
+        //     const product = await productModel.findById(id);
+        //     if (!product) throw new Error('Producto no encontrado');
+
+        //     if(product.owner === email || role === 'admin'){
+        //         await productModel.findByIdAndDelete(id);
+        //         return console.log('services ejecutado correctamente');
+        //     }else{
+        //         return console.log('error de intentar eliminar el producto')
+        //         //
+        //     }
+        // }catch(err){
+        //     return err.message
+        // }
     }
 
     generateMockProductServices(qty){

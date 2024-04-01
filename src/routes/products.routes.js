@@ -31,15 +31,16 @@ router.get('/:pid([a-fA-F0-9]{24})', async(req, res, next) => {
         }
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', handlePolicies(['ADMIN', 'PREMIUM']), async (req, res, next) => {
+        const owner = req.user.email
         const { title, description, code, price, status, stock, category, thumbnails } = req.body
         
-        if(title && description && code && price && status && stock && category && thumbnails){
-            const newContent = { title, description, code, price, status, stock, category, thumbnails};
+        if(title && description && code && price && status && stock && category && thumbnails && owner){
+            const newContent = { title, description, code, price, status, stock, category, thumbnails, owner};
             const normalizedProduct = new ProductDTO(newContent);
             const productComplete = normalizedProduct.getProduct();
             const result = await controller.addProduct(productComplete);
-            req.logger.info(`el usuario acaba de agregar ${JSON.stringify(productComplete, null, 2)}`);
+            req.logger.info(`el usuario ${req.user.email} acaba de agregar ${JSON.stringify(productComplete, null, 2)}`);
 
             res.status(200).send({status: 'Success', payload: result})
         }else{
@@ -71,15 +72,17 @@ router.post('/', async (req, res, next) => {
 
 
 
-router.delete('/:pid([a-fA-F0-9]{24})', handlePolicies(['ADMIN']), async (req, res, next) => {
+router.delete('/:pid([a-fA-F0-9]{24})', async (req, res, next) => {
         const productPid = req.params.pid;
-        await controller.deleteProduct(productPid);
-
-        if(productPid){
-            req.logger.warning(`el usuario acaba de eliminar ${JSON.stringify(productPid, null, 2)}`);
+        const email = req.user.email;
+        const role = req.user.role;
+        
+        if(productPid && email && role){
+            const product = await controller.deleteProduct(productPid, email, role);
+            req.logger.warning(`el usuario acaba de eliminar ${JSON.stringify(product, null, 2)}`);
             res.status(200).send({status: 'Success', payload: `Producto eliminado correctamente`});
         }else{
-            return next(new CustomError(errorsDictionary.ID_NOT_FOUND))
+            return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
         }
 })
 

@@ -34,7 +34,7 @@ class CartServices {
         }
     };
     
-    async addProductToCartServices(cartId, newProduct) {
+    async addProductToCartServices(cartId, newProduct, email) {
         try {
             const cart = await cartModel.findById(cartId);
             if (!cart) {
@@ -46,6 +46,11 @@ class CartServices {
                 console.log('El producto no existe');
                 return;
             }
+
+            if(productToAdd.owner === email){
+                console.log('No es posible añadir este producto')
+            }
+
             const productIndex = cart.products.findIndex(p => p.productId.toString() === newProduct.toString());
     
             if (productIndex > -1) {
@@ -173,7 +178,7 @@ class CartServices {
             }
     
             const newTicket = await ticketModel.create({
-                purchaser: [userEmail],
+                purchaser: userEmail,
                 amount: totalAmount,
             });
     

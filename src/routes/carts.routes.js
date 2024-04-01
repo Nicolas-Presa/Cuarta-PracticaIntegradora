@@ -43,8 +43,9 @@ router.post('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req,
     try{
         const cartId = req.params.cid;
         const productId = req.params.pid
+        const email = req.user.email
 
-        const product = await controller.addProductToCart(cartId, productId);
+        const product = await controller.addProductToCart(cartId, productId, email);
 
         req.logger.info('Se acaba de añadir un nuevo producto al carrito')
         res.status(200).send({status: 'Success', payload: product})
@@ -126,7 +127,7 @@ router.delete('/:cid([a-fA-F0-9]{24})', async(req, res) => {
 })
 
 
-router.get('/:cid/purchase', handlePolicies(['USER']), async(req, res) => {
+router.get('/:cid/purchase', handlePolicies(['ADMIN']), async(req, res) => {
     try{
         const cartId = req.params.cid;
         const userEmail = req.user.email;

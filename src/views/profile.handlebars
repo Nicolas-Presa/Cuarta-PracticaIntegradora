@@ -16,3 +16,37 @@
 <form action="/api/sessions/logout" method="get">
     <button type="submit"> Cerrar Sesion </button>
 </form>
+
+
+{{#if (eq user.role 'user')}}
+    <button id="roleChangeBtn" onclick="updateRole('{{user._id}}', 'premium')">Cambiar a rol usuario Premium</button>
+{{else if (eq user.role 'premium')}}
+    <button id="roleChangeBtn" onclick="updateRole('{{user._id}}', 'user')">Cambiar a rol usuario</button>
+{{/if}}
+
+
+<script>
+function updateRole(userId, newRole) {
+    fetch(`/api/users/premium/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ role: newRole }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }else{
+            window.location.reload();
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>

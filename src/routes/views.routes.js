@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {ProductManager} from '../controllers/product.controller.mdb.js'
 import {CartManager} from '../controllers/cart.controller.mdb.js'
+import config from '../config.js'
+import jwt from 'jsonwebtoken'
 
 const router = Router();
 const productController = new ProductManager();
@@ -8,7 +10,7 @@ const cartController = new CartManager();
 
 router.get('/products', async (req, res) => {
     try {
-        if(req.user && req.user.role === 'admin'){
+        if(req.user && req.user.role === 'user'){
         let filter = req.query.filter;
         let limit = parseInt(req.query.limit, 10) || 10;
         let page = parseInt(req.query.page, 10) || 1;
@@ -26,7 +28,6 @@ router.get('/products', async (req, res) => {
             products: products,
             user: req.user
         });
-        console.log(req.user);
         }else{
             res.redirect('/api/sessions/failproducts');
         }
@@ -75,17 +76,18 @@ router.get('/login', (req, res) =>{
     }
 })
 
-router.get('/restore', (req, res) => {
-    try{
-        if(req.user){
-            res.redirect('/profile')
-        }else{
-            res.render('restore', {})
-        }
-    }catch(err){
-        res.status(500).send({status: 'error', payload: err.message})
+
+router.get('/restore/:token', async (req, res) => {
+    try {
+        const { token } = req.params;
+        const decoded = jwt.verify(token, config.JWT_SECRET);
+
+        res.render('restore', { token });
+    } catch (error) {
+        res.redirect('/login'); 
     }
-})
+});
+
 
 router.get('/profile', (req, res) => {
     try{

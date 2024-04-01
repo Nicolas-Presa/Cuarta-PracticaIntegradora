@@ -8,7 +8,7 @@ const schema = mongoose.Schema({
     code: {type: String, default: () => `${Date.now().toString(36)}-${Math.random().toString(36).substring(2)}`, unique: true},
     purchaser_datetime: {type: Date, default: Date.now},
     amount: {type: Number, default: 0},
-    purchaser: {type: [mongoose.Schema.Types.ObjectId], ref: 'user' }
+    purchaser: {type: String, required: true }
 })
 
 schema.pre('find', function() {

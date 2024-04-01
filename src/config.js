@@ -36,7 +36,10 @@ const config = {
         clientId: process.env.clientId,
         clientSecret: process.env.clientSecret,
         callbackUrl: process.env.callbackUrl
-    }
+    },
+    GOOGLE_APP_EMAIL: process.env.GOOGLE_APP_EMAIL,
+    GOOGLE_APP_PASS: process.env.GOOGLE_APP_PASS,
+    JWT_SECRET: process.env.JWT_SECRET
 }
 
 

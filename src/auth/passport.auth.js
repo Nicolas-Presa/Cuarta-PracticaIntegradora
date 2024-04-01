@@ -46,25 +46,25 @@ const initPassport = () => {
     }, verifyRegistration))
 
 
-    const verifyRestoration = async(req, username, password, done) => {
-        try{
-            const user = await userModel.findOne({ email: username })
+    // const verifyRestoration = async(req, username, password, done) => {
+    //     try{
+    //         const user = await userModel.findOne({ email: username })
 
-            if (!user) return done('No existe un usuario registrado con este mail', false)
+    //         if (!user) return done('No existe un usuario registrado con este mail', false)
 
-            const newPassword = await userModel.findOneAndUpdate({email: username}, {password: createHash(password)})
+    //         const newPassword = await userModel.findOneAndUpdate({email: username}, {password: createHash(password)})
 
-            return done(null, newPassword);
-        }catch(err){
-            return done('error passport local', err.message);
-        }
-    }
+    //         return done(null, newPassword);
+    //     }catch(err){
+    //         return done('error passport local', err.message);
+    //     }
+    // }
 
-    passport.use('restoreAuth', new LocalStrategy({
-        passReqToCallback: true,
-        usernameField: 'email',
-        passwordField: 'pass'
-    }, verifyRestoration))
+    // passport.use('restoreAuth', new LocalStrategy({
+    //     passReqToCallback: true,
+    //     usernameField: 'email',
+    //     passwordField: 'pass'
+    // }, verifyRestoration))
 
 
     const verifyLogin = async(req, username, password, done) =>{

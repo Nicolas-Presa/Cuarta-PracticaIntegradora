@@ -2,6 +2,11 @@ import { Router } from "express";
 import initPassport from '../auth/passport.auth.js';
 import passport from "passport";
 import handlePolicies from '../auth/policies.auth.js'
+import { sendConfirmation } from "../utils.js";
+import userModel from '../models/user.model.js';
+import { createHash, isValidPassword } from '../utils.js';
+import jwt from 'jsonwebtoken'
+import config from '../config.js'
 
 
 
@@ -58,14 +63,27 @@ router.get('/logout', (req, res) => {
     }
 })
 
-router.post('/restore', passport.authenticate('restoreAuth', {failureRedirect: '/api/session/failrestore'}), async(req, res) => {
+router.post('/sendemail', sendConfirmation(), async(req, res) => {
     try{
-        req.logger.warning('Se genero un cambio de contraseña');
-        res.status(200).send({status: 'success', payload: 'Contraseña actualizada'})
+        res.status(200).send({status: 'Success', payload: 'Solicitud de restablecer contraseña enviada, por favor, revise si casilla de correo electronico'});
     }catch(err){
-        res.status(500).send({status: 'error', payload: err.message});
+        res.status(500).send({status: 'error', payload: err.message})
     }
 })
+
+router.post('/restore', async (req, res) => {
+    try {
+        const { token, email, pass } = req.body;
+        jwt.verify(token, config.JWT_SECRET);
+        const newPassword = createHash(pass);
+        await userModel.findOneAndUpdate({ email }, { password: newPassword });
+
+        req.logger.warning('Se generó un cambio de contraseña');
+        res.status(200).send({status: 'success', payload: 'Contraseña actualizada'});
+    } catch (err) {
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+});
 
 
 router.get('/github', passport.authenticate('githubAuth', { scope: ['user:email'] }), async (req, res) => {

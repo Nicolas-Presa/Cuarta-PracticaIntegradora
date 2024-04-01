@@ -14,7 +14,8 @@ import messagesRouter from './routes/messages.routes.js'
 import MongoSingleton from './services/mongo.singleton.js';
 import errorsDictionary from './services/error.dictionary.js';
 import addLogger from './services/winston.logger.js';
-import loggerRouter from './routes/logger.routes.js'
+import loggerRouter from './routes/logger.routes.js';
+import usersRouter from './routes/users.routes.js'
 
 
 const PORT = config.PORT;
@@ -52,6 +53,7 @@ try{
     app.use('/api/carts', cartsRouter);
     app.use('/api/sessions', sessionsRouter);
     app.use('/api/messages', messagesRouter);
+    app.use('/api/users', usersRouter);
     app.use('/', viewsRouter);
 
 

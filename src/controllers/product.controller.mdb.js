@@ -39,11 +39,11 @@ class ProductManager{
         }
     }
 
-    deleteProduct = async (id) => {
+    deleteProduct = async (id, email, role) => {
         try{
-            return await services.deleteProductServices(id)
+            return await services.deleteProductServices(id, email, role)
         }catch(err){
-            err.message
+            return err.message
         }
     }
 
