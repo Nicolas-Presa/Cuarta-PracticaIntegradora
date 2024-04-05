@@ -3,14 +3,15 @@ import {ProductManager} from '../controllers/product.controller.mdb.js'
 import {CartManager} from '../controllers/cart.controller.mdb.js'
 import config from '../config.js'
 import jwt from 'jsonwebtoken'
+import handlePolicies from "../auth/policies.auth.js";
 
 const router = Router();
 const productController = new ProductManager();
 const cartController = new CartManager();
 
-router.get('/products', async (req, res) => {
+router.get('/products',  async (req, res) => {
     try {
-        if(req.user && req.user.role === 'user'){
+        if(req.user){
         let filter = req.query.filter;
         let limit = parseInt(req.query.limit, 10) || 10;
         let page = parseInt(req.query.page, 10) || 1;

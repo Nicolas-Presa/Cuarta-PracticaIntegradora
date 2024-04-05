@@ -41,7 +41,7 @@ class ProductManager{
 
     deleteProduct = async (id, email, role) => {
         try{
-            return await services.deleteProductServices(id, email, role)
+            return await services.deleteProductServices(id)
         }catch(err){
             return err.message
         }

@@ -8,8 +8,8 @@ class ProductServices {
 
     async addProductServices(product) {
         try{
-            productModel.create(product)
-            return 'Product agregado'
+            const newProduct = await productModel.create(product)
+            return newProduct
         }catch(err){
             return err.message
         }
@@ -41,7 +41,7 @@ class ProductServices {
 
     async getProductsByIdServices(id) {
         try{
-            const product = productModel.findById(id)
+            const product = await productModel.findById(id)
             return product
         }catch(err){
             return err.message
@@ -50,43 +50,20 @@ class ProductServices {
 
     async updateProductServices(id, newData) {
         try{
-            const product = await productModel.findByIdAndUpdate(id, newData)
+            const product = await productModel.findByIdAndUpdate(id, newData, {new: true} )
             return product
         }catch(err){
             return err.message
         }
     }
 
-    deleteProductServices = async (id, email, role) => {
+    deleteProductServices = async (id) => {
         try{
-            const product = await productModel.findById(id)
-            if(!product) throw new CustomError(errorsDictionary.INVALID_PARAMETER)
-
-            if(product.owner === email || role === 'admin'){
-                const deleteProduct = await productModel.findByIdAndDelete(id)
-                return deleteProduct
-            }else{
-                throw new CustomError(errorsDictionary.INVALID_ROLE)
-            }
+            const deleteProduct = await productModel.findByIdAndDelete(id)
+            return deleteProduct
         }catch(err){
             return err.message
         }
-
-
-        // try{
-        //     const product = await productModel.findById(id);
-        //     if (!product) throw new Error('Producto no encontrado');
-
-        //     if(product.owner === email || role === 'admin'){
-        //         await productModel.findByIdAndDelete(id);
-        //         return console.log('services ejecutado correctamente');
-        //     }else{
-        //         return console.log('error de intentar eliminar el producto')
-        //         //
-        //     }
-        // }catch(err){
-        //     return err.message
-        // }
     }
 
     generateMockProductServices(qty){

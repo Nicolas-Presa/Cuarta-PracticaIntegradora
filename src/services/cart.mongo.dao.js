@@ -34,29 +34,15 @@ class CartServices {
         }
     };
     
-    async addProductToCartServices(cartId, newProduct, email) {
+    async addProductToCartServices(cartId, productId) {
         try {
-            const cart = await cartModel.findById(cartId);
-            if (!cart) {
-                console.log('El carrito no existe');
-                return;
-            }
-            const productToAdd = await productModel.findById(newProduct);
-            if (!productToAdd) {
-                console.log('El producto no existe');
-                return;
-            }
-
-            if(productToAdd.owner === email){
-                console.log('No es posible añadir este producto')
-            }
-
-            const productIndex = cart.products.findIndex(p => p.productId.toString() === newProduct.toString());
+            const cart = await cartModel.findById(cartId)
+            const productIndex = cart.products.findIndex(p => p.productId.toString() === productId.toString());
     
             if (productIndex > -1) {
                 cart.products[productIndex].quantity += 1;
             } else {
-                cart.products.push({ productId: newProduct, quantity: 1 });
+                cart.products.push({ productId: productId, quantity: 1 });
             }
     
             let total = 0;
@@ -67,31 +53,45 @@ class CartServices {
             }
     
             cart.total = total;
-    
             await cart.save();
             return cart;
         } catch (err) {
-            console.error('Error al agregar producto al carrito:', err.message);
             return err.message;
         }
     }
 
+    // async updateCartServices(cartId, arrayProducts) { 
+    //     try{
+    //         const updateCart = await cartModel.findByIdAndUpdate(
+    //             cartId,
+    //             {$set: {products: arrayProducts}},
+    //             {new: true}
+    //         );
+    //         return updateCart
+    //     }catch(err){
+    //         return err.message
+    //     }
+    // }
+
+    // async updateCartProductServices(cartId, productId, newQuantity) {
+    //     try{
+    //         const updateCartProduct = await cartModel.findOneAndUpdate(
+    //             { _id: cartId, 'products.productId': productId },
+    //             { $set: { 'products.$.quantity': newQuantity} },
+    //             { new: true }
+    //         )
+    //         return updateCartProduct
+    //     }catch(err){
+    //         return err.message
+    //     }
+    // }
 
     async deleteProductToCartServices(cartId, productId) {
         try {
-            const cart = await cartModel.findById(cartId);
-            if (!cart) {
-                console.log('Este carrito no existe');
-                return;
-            }
-    
+            const cart = await cartModel.findById(cartId)
             const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
             if (productIndex > -1) {
                 const product = await productModel.findById(productId);
-                if (!product) {
-                    console.log('Producto no encontrado en la base de datos');
-                    return;
-                }
     
                 const productPrice = Number(product.price);
     
@@ -106,48 +106,18 @@ class CartServices {
                 await cart.save();
                 return cart;
             } else {
-                console.log('Producto no encontrado en el carrito');
                 return null;
             }
         } catch (err) {
-            console.error('Error al eliminar producto del carrito:', err);
             return err.message;
         }
     }
 
-    async updateCartServices(cartId, arrayProducts) { 
-        try{
-            const updateCart = await cartModel.findByIdAndUpdate(
-                cartId,
-                {$set: {products: arrayProducts}},
-                {new: true}
-            );
-            return updateCart
-        }catch(err){
-            return err.message
-        }
-    }
-
-    async updateCartProductServices(cartId, productId, newQuantity) {
-        try{
-            const updateCartProduct = await cartModel.findOneAndUpdate(
-                { _id: cartId, 'products.productId': productId },
-                { $set: { 'products.$.quantity': newQuantity} },
-                { new: true }
-            )
-            return updateCartProduct
-        }catch(err){
-            return err.message
-        }
-    }
-    
-
-
-    async deleteProductsServices(cartId) {
+    async emptyCartServices(cartId) {
         try{
             const deleteProducts = await cartModel.findByIdAndUpdate(
                 cartId,
-                { $set: { products: [] } },
+                { $set: { products: [], total: 0 } },
                 { new: true }
             );
             return deleteProducts
@@ -158,9 +128,7 @@ class CartServices {
 
     async processPurchase(cartId, userEmail) {
         try {
-            const cart = await cartModel.findById(cartId).populate('products.productId');
-            if (!cart) throw new Error('Carrito no encontrado');
-    
+            const cart = await cartModel.findById(cartId)
             for (const item of cart.products) {
                 const product = await productModel.findById(item.productId);
                 if (product.stock < item.quantity) {
@@ -183,6 +151,7 @@ class CartServices {
             });
     
             cart.products = [];
+            cart.total = 0;
             await cart.save();
     
             return newTicket;

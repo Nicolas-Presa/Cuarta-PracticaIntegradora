@@ -1,0 +1,224 @@
+paths: 
+  /api/products:
+    post:
+      summary: 'Permite añadir un nuevo producto a la base de datos'
+      tags:
+        - Products
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/addProduct'
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "500":
+          description: 'Error'
+
+
+    get:
+      summary: 'Muestra el listado de todos los productos'
+      tags:
+        - Products
+      responses: 
+        "200": 
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#components/schemas/Product'
+        "500":
+          description: 'Error'
+
+  /api/products/{pid}:
+    get:
+      summary: 'Permite traer un producto por su ID (De mongoDB en este caso)'
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Product'
+        "500":
+          description: 'Error'
+
+    put:
+      summary: 'Permite traer un producto por su ID (De MongoDB en este caso) y actualizar uno o mas campos especificos'
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              item:
+                $ref: '#/components/requestBodies/updateProduct'
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                item:
+                  $ref: '#/components/schemas/Product'
+        "500":
+          description: 'Error'
+
+    delete:
+      summary: 'Permite traer un producto por su ID (De MongoDB en este caso) y eliminarlo'
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                item:
+                  $ref: '#/components/schemas/Product'
+        "500":
+          description: 'Error'
+
+
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: objectId
+          description: 'ID mongoDB'
+        title:
+          type: string
+          description: 'Nombre del producto'
+        description:
+          type: string
+          description: 'Descripcion del producto'
+        code:
+          type: string
+          description: 'Codigo que identifica cada producto'
+        price:
+          type: number
+          description: 'Precio'
+        status: 
+          type: boolean
+          description: 'Variacion entre True o False para indicar si el producto esta disponible o no para la venta'
+        stock:
+          type: number
+          description: 'Cantidad para ofrecer a la venta'
+        category:
+          type: string
+          description: 'Categoria para agrupar cierta cantidad de productos'
+        thumbnails:
+          type: string
+          description: 'codigo de imagen del producto'
+        owner:
+          type: string
+          description: 'Indica el mail del usuario que cargo el producto'
+      example:
+        _id: 65c27398ca7d9854920474a4
+        title: Remera Negra
+        description: S
+        code: '050'
+        price: 950
+        status: true
+        stock: 50
+        category: remeras
+        thumbnails: /
+
+  requestBodies:
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        code:
+          type: string
+        price:
+          type: number
+        status: 
+          type: boolean
+        stock:
+          type: number
+        category:
+          type: string
+        thumbnails:
+          type: string
+        owner:
+          type: string
+      example:
+        title: Remera Negra
+        description: S
+        code: '050'
+        price: 950
+        status: true
+        stock: 50
+        category: remeras
+        thumbnails: /
+        owner: nicolascoder@gmail.com
+
+    addProduct:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        code:
+          type: string
+        price:
+          type: number
+        status: 
+          type: boolean
+        stock:
+          type: number
+        category:
+          type: string
+        thumbnails:
+          type: string
+        owner:
+          type: string
+      example:
+        title: Remera Negra
+        description: S
+        code: '050'
+        price: 950
+        status: true
+        stock: 50
+        category: remeras
+        thumbnails: /
+        owner: nicolascoder@gmail.com
+

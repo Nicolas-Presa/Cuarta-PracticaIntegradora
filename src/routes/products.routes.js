@@ -31,42 +31,47 @@ router.get('/:pid([a-fA-F0-9]{24})', async(req, res, next) => {
         }
 })
 
-router.post('/', handlePolicies(['ADMIN', 'PREMIUM']), async (req, res, next) => {
-        const owner = req.user.email
-        const { title, description, code, price, status, stock, category, thumbnails } = req.body
-        
-        if(title && description && code && price && status && stock && category && thumbnails && owner){
-            const newContent = { title, description, code, price, status, stock, category, thumbnails, owner};
-            const normalizedProduct = new ProductDTO(newContent);
-            const productComplete = normalizedProduct.getProduct();
-            const result = await controller.addProduct(productComplete);
-            req.logger.info(`el usuario ${req.user.email} acaba de agregar ${JSON.stringify(productComplete, null, 2)}`);
+router.post('/',  async (req, res, next) => {
+        const { title, description, code, price, status, stock, category, thumbnails, owner } = req.body
 
+        if(!title || !description || !code || !price || !status || !stock || !category || !thumbnails || !owner){
+            return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
+        }
+
+        const newContent = { title, description, code, price, status, stock, category, thumbnails, owner};
+        const normalizedProduct = new ProductDTO(newContent);
+        const productComplete = normalizedProduct.getProduct();
+
+        const result = await controller.addProduct(productComplete);
+        if(result){
+            req.logger.info(`el usuario ${owner} acaba de agregar ${JSON.stringify(productComplete, null, 2)}`)
             res.status(200).send({status: 'Success', payload: result})
         }else{
-            req.logger.error('Parametros insuficientes')
-            return next(new CustomError(errorsDictionary.FEW_PARAMETERS));
+            return next(new CustomError(errorsDictionary.DATABASE_ERROR))
         }
     })
 
-    router.put('/:pid([a-fA-F0-9]{24})', handlePolicies(['ADMIN']), async (req, res, next) => {
-        let updateProduct = req.body;
-        let productPid = req.params.pid;
+    router.put('/:pid([a-fA-F0-9]{24})',  async (req, res, next) => {
+        const productPid = req.params.pid;
+        const newData = req.body;
+        console.log(newData)
 
-        if(!updateProduct && !productPid){
-            req.logger.error('Parametros insuficientes');
+        const product = await controller.getProductById(productPid);
+        if(!product){
+            return next(new CustomError(errorsDictionary.ID_NOT_FOUND))
+        }
+
+        if(Object.keys(newData).length === 0){
             return next(new CustomError(errorsDictionary.FEW_PARAMETERS));
         }
 
-        await controller.updateProduct(productPid, updateProduct);
-        const newProduct = await controller.getProductById(productPid);
+        const updateProduct = await controller.updateProduct(productPid, newData);
 
-        if(newProduct){
-            req.logger.info(`el usuario acaba de modificar ${JSON.stringify(newProduct, null, 2)}`);
-            res.status(200).send({status: 'Success', data: newProduct});
+        if(updateProduct){
+            req.logger.info(`el usuario acaba de modificar ${JSON.stringify(updateProduct, null, 2)}`);
+            res.status(200).send({status: 'Success', payload: updateProduct});
         }else{
-            req.logger.info('el ID debe coincidir con el otorgado por mongoDB')
-            return next(new CustomError(errorsDictionary.ID_NOT_FOUND))
+            return next(new CustomError(errorsDictionary.DATABASE_ERROR))
         }
 });
 
@@ -76,13 +81,22 @@ router.delete('/:pid([a-fA-F0-9]{24})', async (req, res, next) => {
         const productPid = req.params.pid;
         const email = req.user.email;
         const role = req.user.role;
-        
-        if(productPid && email && role){
-            const product = await controller.deleteProduct(productPid, email, role);
-            req.logger.warning(`el usuario acaba de eliminar ${JSON.stringify(product, null, 2)}`);
-            res.status(200).send({status: 'Success', payload: `Producto eliminado correctamente`});
+
+        if(!productPid || !email || !role){
+            return next(new CustomError(errorsDictionary.FEW_PARAMETERS));
+        }
+
+        const product = await controller.getProductById(productPid);
+        if(!product){
+            return next(new CustomError(errorsDictionary.ID_NOT_FOUND));
+        }
+
+        if(email === product.owner || role === 'admin'){
+            const deleteProduct = await controller.deleteProduct(productPid)
+            req.logger.warning(`El usuario ${email} acaba de eliminar ${JSON.stringify(deleteProduct, null, 2)}`)
+            res.status(200).send({status: 'Success', payload: deleteProduct});
         }else{
-            return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
+            return next(new CustomError(errorsDictionary.INVALID_ROLE))
         }
 })
 

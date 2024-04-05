@@ -1,0 +1,161 @@
+paths:
+  /api/carts:
+    post:
+      summary: 'Permite crear un nuevo carrito para el usuario'
+      tags:
+        - Carts
+      requestBody:
+        description: 'Datos obligatorios en el body'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/addCart'
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "500":
+          description: 'Error'
+
+    get:
+      summary: 'Permite traer todos los carritos de la coleccion'
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        "500":
+          description: 'Error'
+
+  api/carts/{cid}:
+    get:
+      summary: 'Permite visualizar el carrito especifico por su ID (De MongoDB en este caso)'
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#components/schemas/Cart'
+        "500":
+          description: 'Error'
+
+    delete:
+      summary: 'Permite vaciar el carrito'
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Cart'
+        "500":
+          description: 'Error'
+
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: 'Permite agregar un producto al carrito por su ID'
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+        - name: pid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "500":
+          description: 'Error'
+
+    delete:
+      summary: 'Permite eliminar un producto del carrito por medio de su ID'
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+        - name: pid
+          in: path
+          required: true
+      responses:
+        "200":
+          description: 'Success'
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Cart'
+        "500":
+          description: 'Error'
+
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: objectId
+          description: 'Id MongoDB'
+        products:
+          type: array
+          items:
+            productId:
+              type: objectId
+              description: 'ID de mongoDB que hace referencia a otra coleccion (la coleccion de productos)'
+            quantity:
+              type: number
+              description: 'Cantidad de cada producto traido por su id de la otra coleccion'
+        total:
+          type: number
+          description: 'Total de suma de todos los precios de cada producto por su cantidad'
+      example:
+        _id: 65c2745dca7d9854920474bd
+        products: [{
+          productId: 65c28e5aca7d9854920474fd,
+          quantity: 5
+        }]
+        total: 5000
+
+  requestBodies:
+    addCart:
+      type: object
+      properties:
+        products: [{
+          productId: null,
+          quantity: 0
+        }]
+        total: 0

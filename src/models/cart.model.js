@@ -8,9 +8,9 @@ const schema = mongoose.Schema({
     products: [{
         _id: false,
         productId: {type: mongoose.Schema.Types.ObjectId, ref: 'products'},
-        quantity: {type: Number, required: true}
+        quantity: {type: Number, required: false}
     }],
-    total: {type: Number, required: false} 
+    total: {type: Number, default: 0} 
 })
 
 schema.pre('find', function() {

@@ -15,7 +15,10 @@ import MongoSingleton from './services/mongo.singleton.js';
 import errorsDictionary from './services/error.dictionary.js';
 import addLogger from './services/winston.logger.js';
 import loggerRouter from './routes/logger.routes.js';
-import usersRouter from './routes/users.routes.js'
+import usersRouter from './routes/users.routes.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+
 
 
 const PORT = config.PORT;
@@ -24,6 +27,19 @@ const PORT = config.PORT;
 try{
     MongoSingleton.getInstance()
     const app = express();
+
+    const swaggerOptions = {
+        definition: {
+            openapi: '3.0.1',
+            info: {
+                title: 'Documentacion de ecommerce',
+                description: 'Esta documentacion cubre todas la API habilitada para el ecommerce'
+            },
+        },
+        apis: ['./src/docs/**/*.yaml'],
+    };
+    
+    const specs = swaggerJsdoc(swaggerOptions)
 
 
     app.listen(PORT, () => {
@@ -55,6 +71,7 @@ try{
     app.use('/api/messages', messagesRouter);
     app.use('/api/users', usersRouter);
     app.use('/', viewsRouter);
+    app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 
     app.engine('handlebars', handlebars.engine({helpers: {eq: (v1, v2) => v1 === v2,}}));

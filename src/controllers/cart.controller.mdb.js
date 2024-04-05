@@ -29,14 +29,29 @@ class CartManager{
         }
     };
     
-    async addProductToCart(cartId, newProduct, email) {
+    async addProductToCart(cartId, productId) {
         try{
-            return await services.addProductToCartServices(cartId, newProduct, email)
+            return await services.addProductToCartServices(cartId, productId)
         }catch(err){
             return err.message
         }
     }
 
+    // async updateCart(cartId, arrayProducts) { 
+    //     try{
+    //         return await services.updateCartServices(cartId, arrayProducts)
+    //     }catch(err){
+    //         return err.message
+    //     }
+    // }
+
+    // async updateCartProduct(cartId, productId, newQuantity) {
+    //     try{
+    //         return await services.updateCartProductServices(cartId, productId, newQuantity)
+    //     }catch(err){
+    //         return err.message
+    //     }
+    // }
 
     async deleteProductToCart(cartId, productId) {
         try{
@@ -46,27 +61,9 @@ class CartManager{
         }
     }
 
-    async updateCart(cartId, arrayProducts) { 
+    async emptyCart(cartId) {
         try{
-            return await services.updateCartServices(cartId, arrayProducts)
-        }catch(err){
-            return err.message
-        }
-    }
-
-    async updateCartProduct(cartId, productId, newQuantity) {
-        try{
-            return await services.updateCartProductServices(cartId, productId, newQuantity)
-        }catch(err){
-            return err.message
-        }
-    }
-    
-
-
-    async deleteProducts(cartId) {
-        try{
-            return await services.deleteProductsServices(cartId)
+            return await services.emptyCartServices(cartId)
         }catch(err){
             return err.message
         }
