@@ -114,6 +114,30 @@ router.get('/message', async(req, res) =>{
     }
 })
 
+router.get('/addProduct', async(req, res) =>{
+    try{
+        if(req.user){
+            res.render('addProduct', {user: req.user})
+        }else{
+            res.redirect('/login')
+        }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})
+
+router.get('/role', async(req, res) => {
+    try{
+        if(req.user){
+            res.render('role', {user: req.user})
+        }else{
+            res.redirect('/login')
+        }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})
+
 
 
 export default router

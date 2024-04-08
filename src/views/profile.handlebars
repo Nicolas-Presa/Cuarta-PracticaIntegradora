@@ -19,10 +19,17 @@
 
 
 {{#if (eq user.role 'user')}}
-    <button id="roleChangeBtn" onclick="updateRole('{{user._id}}', 'premium')">Cambiar a rol usuario Premium</button>
+    <button id="role__button">Cambiar a rol usuario Premium</button>
 {{else if (eq user.role 'premium')}}
-    <button id="roleChangeBtn" onclick="updateRole('{{user._id}}', 'user')">Cambiar a rol usuario</button>
+    <button onclick="updateRole('{{user._id}}', 'user')">Cambiar a rol usuario</button>
 {{/if}}
+
+<script>
+    const roleButton = document.querySelector('#role__button');
+    roleButton.addEventListener('click', function() {
+        window.location.href = '/role';
+    })
+</script>
 
 
 <script>
@@ -41,9 +48,6 @@ function updateRole(userId, newRole) {
             window.location.reload();
         }
         return response.json();
-    })
-    .then(data => {
-        console.log(data);
     })
     .catch(error => {
         console.error('Error:', error);

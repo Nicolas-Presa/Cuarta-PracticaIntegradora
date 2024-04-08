@@ -4,6 +4,7 @@ import handlePolicies from '../auth/policies.auth.js'
 import { ProductDTO } from "../repositories/products.repository.js";
 import CustomError from '../services/error.custom.class.js';
 import errorsDictionary from "../services/error.dictionary.js";
+import { uploaderProducts } from "../uploader.js";
 
 const router = Router();
 const controller = new ProductManager();
@@ -31,14 +32,15 @@ router.get('/:pid([a-fA-F0-9]{24})', async(req, res, next) => {
         }
 })
 
-router.post('/',  async (req, res, next) => {
-        const { title, description, code, price, status, stock, category, thumbnails, owner } = req.body
+router.post('/', uploaderProducts.single('thumbnails'),  async (req, res, next) => {
+        const thumbnails = req.file.path
+        const { title, description, code, price, stock, category, owner } = req.body
 
-        if(!title || !description || !code || !price || !status || !stock || !category || !thumbnails || !owner){
+        if(!title || !description || !code || !price || !stock || !category || !thumbnails || !owner){
             return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
         }
 
-        const newContent = { title, description, code, price, status, stock, category, thumbnails, owner};
+        const newContent = { title, description, code, price, stock, category, thumbnails, owner};
         const normalizedProduct = new ProductDTO(newContent);
         const productComplete = normalizedProduct.getProduct();
 

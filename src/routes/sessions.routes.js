@@ -4,10 +4,10 @@ import passport from "passport";
 import handlePolicies from '../auth/policies.auth.js'
 import { sendConfirmation } from "../utils.js";
 import userModel from '../models/user.model.js';
-import { createHash, isValidPassword } from '../utils.js';
+import { createHash} from '../utils.js';
 import jwt from 'jsonwebtoken'
 import config from '../config.js'
-
+import { uploaderProfile } from '../uploader.js'
 
 
 initPassport();
@@ -32,7 +32,7 @@ router.get('/failproducts', async(req, res) => {
 
 
 
-router.post('/register', passport.authenticate('registerAuth', {failureRedirect: '/api/sessions/failregister'}), async(req, res) => {
+router.post('/register', uploaderProfile.single('thumbnails'), passport.authenticate('registerAuth', {failureRedirect: '/api/sessions/failregister'}), async(req, res) => {
     try{
         res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
     }catch(err){
@@ -49,12 +49,19 @@ router.post('/login', passport.authenticate('loginAuth', {failureRedirect: '/api
     }
 })
 
-router.get('/logout', (req, res) => {
+router.get('/logout', async(req, res) => {
     try{
-        req.session.destroy((err) => {
+        req.session.destroy(async (err) => {
             if(err){
                 res.status(500).send({ status: 'ERR', payload: err.message })
             }else{
+                const user = await userModel.findOne({email: req.user.email});
+
+                const loguot = await userModel.findByIdAndUpdate(
+                    user._id,
+                    {$set: {last_connection: false}},
+                    {new: true}
+                )
                 res.redirect('/login')
             }
         })

@@ -36,8 +36,9 @@ const prodLogger = winston.createLogger({
 })
 
 const addLogger = (req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.ip
     req.logger = config.MODE === 'devel' ? devLogger : prodLogger;
-    req.logger.http(`${new Date().toDateString()} ${req.method} ${req.url}`)
+    req.logger.http(`${new Date().toDateString()} ${req.method} ${req.url} [${ip}]`)
     next()
 }
 

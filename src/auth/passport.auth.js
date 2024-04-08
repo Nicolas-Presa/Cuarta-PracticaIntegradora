@@ -10,8 +10,6 @@ import cartModel from '../models/cart.model.js'
 const initPassport = () => {
     const verifyRegistration = async (req, username, password, done) => {
         try{
-            const {first_name, last_name, age} = req.body
-
             const user = await userModel.findOne({email: username})
 
             if(user){
@@ -23,7 +21,8 @@ const initPassport = () => {
                 last_name: req.body.last_name,
                 email: username,
                 age: req.body.age,
-                password: createHash(password)
+                password: createHash(password),
+                thumbnails: req.file.path
             }
             const normalizedUser = new UserDTO(newUser);
             const saveUser = normalizedUser.getUser();
@@ -75,7 +74,12 @@ const initPassport = () => {
         }
 
         if(user !== null && isValidPassword(user, password)){
-            return done(null, user)
+            const login = await userModel.findByIdAndUpdate(
+                user._id,
+                {$set: {last_connection: true}},
+                {new: true}
+            )
+            return done(null, login)
         }else{
             return done('error en passport local', false)
         }

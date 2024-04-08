@@ -11,8 +11,15 @@ const schema = mongoose.Schema({
     email: {type: String, required: true, index: true},
     age: {type: Number, required: false},
     password: {type: String, required: true},
+    thumbnails: {type: String, required: false},
     cartId: {type: mongoose.Schema.Types.ObjectId, ref: 'cart', required: false},
-    role: {type: String, enum: ['user', 'premium', 'admin'], default: 'user'}
+    role: {type: String, enum: ['user', 'premium', 'admin'], default: 'user'},
+    documents: [{
+        _id: false,
+        name: {type: String, required: false},
+        reference: {type: String, required: false}
+    }],
+    last_connection: {type: Boolean, default: false}
 })
 
 export default mongoose.model(collection, schema);

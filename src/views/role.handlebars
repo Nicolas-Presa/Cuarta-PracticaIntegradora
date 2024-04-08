@@ -1,0 +1,18 @@
+<h1>Para cambiar tu rol a Premium, es obligatorio cargar los siguientes archivos</h1>
+
+
+<form action="/api/users/{{user._id}}/documents" method="post" enctype="multipart/form-data">
+    <label for="indentification">Ingrese aqui su indentification por nombre y documento que lo valide</label>
+    <input type="text" name="documents[0][name]" placeholder="Nombre completo aqui..." required>
+    <input type="file" name="documents[0][reference]" required>
+
+    <label for="domicilio">Ingrese aqui si domicilio por direccion exacta y archivo comprobante</label>
+    <input type="text" name="documents[1][name]" placeholder="Dicreccion completa aqui..." required>
+    <input type="file" name="documents[1][reference]" required>
+
+    <label for="estado">Ingrese estado de cuenta aqui por escrito y archivo comprobante</label>
+    <input type="text" name="documents[2][name]" placeholder="Estado de cuenta aqui..." required>
+    <input type="file" name="documents[2][reference]" required>
+
+    <button type="submit">Cargar Archivos</button>
+</form>
