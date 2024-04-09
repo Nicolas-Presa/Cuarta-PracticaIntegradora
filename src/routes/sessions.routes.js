@@ -51,11 +51,12 @@ router.post('/login', passport.authenticate('loginAuth', {failureRedirect: '/api
 
 router.get('/logout', async(req, res) => {
     try{
+        const userEmail = req.user.email
         req.session.destroy(async (err) => {
             if(err){
                 res.status(500).send({ status: 'ERR', payload: err.message })
             }else{
-                const user = await userModel.findOne({email: req.user.email});
+                const user = await userModel.findOne({email: userEmail});
 
                 const loguot = await userModel.findByIdAndUpdate(
                     user._id,

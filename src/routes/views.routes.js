@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {ProductManager} from '../controllers/product.controller.mdb.js'
 import {CartManager} from '../controllers/cart.controller.mdb.js'
+import { UserManager } from "../controllers/user.controller.mdb.js";
 import config from '../config.js'
 import jwt from 'jsonwebtoken'
 import handlePolicies from "../auth/policies.auth.js";
@@ -8,6 +9,7 @@ import handlePolicies from "../auth/policies.auth.js";
 const router = Router();
 const productController = new ProductManager();
 const cartController = new CartManager();
+const userController = new UserManager();
 
 router.get('/products',  async (req, res) => {
     try {
@@ -133,6 +135,15 @@ router.get('/role', async(req, res) => {
         }else{
             res.redirect('/login')
         }
+    }catch(err){
+        res.status(500).send({status: 'error', payload: err.message})
+    }
+})
+
+router.get('/users', handlePolicies(['ADMIN']), async(req, res) => {
+    try{
+        const users = await userController.getUsers();
+        res.render('users', {users: users})
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message})
     }

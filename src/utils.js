@@ -47,3 +47,27 @@ export const sendConfirmation = () => {
         }
     }
 }
+
+export const sendUsersDeleteConfirmation = async (users) => {
+    try {
+        const promises = users.map(user => {
+            const userEmail = user.email;
+            const subject = 'Notificación de CoderStore: Cuenta eliminada';
+            const html = `
+                <h1>Cuenta Eliminada</h1>
+                <p>Tu cuenta ha sido eliminada por inactividad. Si deseas volver a utilizar nuestros servicios, por favor crea una nueva cuenta.</p>
+            `;
+
+            return mailerService.sendMail({
+                from: config.GOOGLE_APP_EMAIL,
+                to: userEmail,
+                subject: subject,
+                html: html
+            });
+        });
+
+        await Promise.all(promises);
+    } catch (err) {
+        console.error('Error sending deletion confirmation emails:', err.message);
+    }
+}

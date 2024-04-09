@@ -22,7 +22,9 @@ const initPassport = () => {
                 email: username,
                 age: req.body.age,
                 password: createHash(password),
-                thumbnails: req.file.path
+                thumbnails: req.file.path,
+                last_connection: true,
+                last_connection_date: new Date()
             }
             const normalizedUser = new UserDTO(newUser);
             const saveUser = normalizedUser.getUser();
@@ -76,7 +78,7 @@ const initPassport = () => {
         if(user !== null && isValidPassword(user, password)){
             const login = await userModel.findByIdAndUpdate(
                 user._id,
-                {$set: {last_connection: true}},
+                {$set: {last_connection: true, last_connection_date: new Date()}},
                 {new: true}
             )
             return done(null, login)

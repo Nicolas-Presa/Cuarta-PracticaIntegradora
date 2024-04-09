@@ -1,0 +1,63 @@
+<h1>Lista de usuarios</h1>
+
+<div class="users__container">
+    {{#each users}}
+        <div class="">
+            <h1 class="">Name: {{ this.full_name }} </h1>
+            <p class="">Email: {{ this.email }} </p>
+            <p class=""> Role: {{ this.role }} </p>
+            {{#if (eq this.role 'user')}}
+                <button onclick="updateRole('{{this._id}}', 'premium')">Cambiar a rol usuario Premium</button>
+            {{else if (eq this.role 'premium')}}
+                <button onclick="updateRole('{{this._id}}', 'user')">Cambiar a rol usuario</button>
+            {{/if}}
+            <button onclick="deleteUser('{{this._id}}')">Eliminar usuario</button>
+        </div>
+    {{/each}}
+</div>
+
+
+<script>
+    function deleteUser(userId){
+        fetch(`api/users/deletefromadmin/${userId}`, {
+            method: 'DELETE',
+            haders: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(respons => {
+            if(!response.ok){
+                throw new Error('Error al llamar el metodo de eliminacion');
+            }else{
+                window.location.reload();
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.log('Error', error)
+        });
+    }
+</script>
+
+<script>
+function updateRole(userId, newRole) {
+    fetch(`/api/users/premium/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ role: newRole }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }else{
+            window.location.reload();
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>

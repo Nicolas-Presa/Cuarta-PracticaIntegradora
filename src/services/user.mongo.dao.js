@@ -47,6 +47,26 @@ class UserServices{
             return err.message
         }
     }
+
+    deleteUserByIdServices = async(userId) => {
+        try{
+            const deleteUser = await userModel.findByIdAndDelete(userId);
+            return deleteUser
+        }catch(err){
+            return err.message
+        }
+    }
+
+    deleteUsersByIdServices = async(userIds) => {
+        try{
+            const result = await userModel.deleteMany({
+                _id: { $in: userIds }
+            });
+            return result
+        }catch(err){
+            return err.message
+        }
+    }
 }
 
 export { UserServices }

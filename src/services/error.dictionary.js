@@ -13,7 +13,8 @@ const errorsDictionary = {
     PURCHASE_RESTRICTION: {code: 400, message: 'Usted no puede comprar el mismo producto que esta vendiendo'},
     ERROR_ADDING: {code: 400, message: 'Error al intentar agregar este producto al carrito'},
     PRODUCT_NOT_FOUND: {code: 500, message: 'No se encuentra este producto en el carrito'},
-    EMPTY_CART: {code: 400, message: 'Este carrito esta vacio'}
+    EMPTY_CART: {code: 400, message: 'Este carrito esta vacio'},
+    NO_ACTIVE_USERS: {date: 400, message: 'No hay usuarios con inactividad de 2 dias'}
 }
 
 export default errorsDictionary;

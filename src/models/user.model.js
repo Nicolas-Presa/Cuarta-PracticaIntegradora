@@ -19,7 +19,8 @@ const schema = mongoose.Schema({
         name: {type: String, required: false},
         reference: {type: String, required: false}
     }],
-    last_connection: {type: Boolean, default: false}
+    last_connection: {type: Boolean, default: false},
+    last_connection_date: {type: Date, required: false}
 })
 
 export default mongoose.model(collection, schema);

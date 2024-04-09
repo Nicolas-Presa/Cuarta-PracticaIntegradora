@@ -38,6 +38,22 @@ class UserManager{
             return err.message
         }
     }
+
+    async deleteUserById(userId) {
+        try{
+            return await services.deleteUserByIdServices(userId);
+        }catch(err){
+            return err.message
+        }
+    }
+
+    async deleteUsersById(users){
+        try{
+            return await services.deleteUsersByIdServices(users)
+        }catch(err){
+            return err.message
+        }
+    }
 }
 
 export { UserManager }
