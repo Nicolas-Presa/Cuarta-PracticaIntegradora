@@ -34,7 +34,8 @@ router.get('/failproducts', async(req, res) => {
 
 router.post('/register', uploaderProfile.single('thumbnails'), passport.authenticate('registerAuth', {failureRedirect: '/api/sessions/failregister'}), async(req, res) => {
     try{
-        res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
+        // res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
+        res.redirect('/profile')
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message});
     }
@@ -43,7 +44,8 @@ router.post('/register', uploaderProfile.single('thumbnails'), passport.authenti
 router.post('/login', passport.authenticate('loginAuth', {failureRedirect: '/api/sessions/faillogin'}), async (req, res) => {
     try{
         req.logger.warning('Se genero un logueo del usuario');
-        res.status(200).send({status: 'Success', payload: 'Usuario logueado'})
+        // res.status(200).send({status: 'Success', payload: 'Usuario logueado'})
+        res.redirect('/profile')
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message});
     }

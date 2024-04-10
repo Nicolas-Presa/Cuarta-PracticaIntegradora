@@ -54,7 +54,7 @@ try{
     app.use(express.urlencoded({extended: true}));
     app.use(express.json());
     app.use(session({ 
-        store: MongoStore.create({ mongoUrl: config.MONGOOSE_URL, mongoOptions: {}, ttl: 60, clearInterval: 5000 }),
+        store: MongoStore.create({ mongoUrl: config.MONGOOSE_URL, mongoOptions: {}, ttl: 1800, clearInterval: 5000 }),
         secret: 'Us3RS3cR3T', 
         resave: false, 
         saveUninitialized: false 

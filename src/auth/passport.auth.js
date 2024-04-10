@@ -96,14 +96,21 @@ const initPassport = () => {
 
     const verifyGithub = async(accessToken, refreshToken, profile, done) => {
         try{
-            const user = await userModel.findOne({email: profile._json.email})
+            const user = await userModel.findOne({email: `${profile._json.login}@gmail.com`}) 
+            //Mi perfil de GitHub no deja visualizar el email (retorna null)
             if(!user){
                 const newUser = {
-                    username: `${profile._json.login}@gmail.com`,
-                    password: ' '
+                    first_name: profile._json.login,
+                    last_name: profile._json.login,
+                    email: `${profile._json.login}@gmail.com`,
+                    password: ' ',
+                    last_connection_date: new Date()
                 }
+            
+                let process = await userModel.create(newUser);
+                const newCart = await cartModel.create({products: [], total: 0});
+                process = await userModel.findByIdAndUpdate(process._id, { $set: { cartId: newCart._id } }, { new: true }); 
 
-                const process = await userModel.create(newUser);
                 return done(null, process)
             }else{
                 return done(null, user)

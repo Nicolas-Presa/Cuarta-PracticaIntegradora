@@ -36,7 +36,8 @@ router.get('/:pid([a-fA-F0-9]{24})', async(req, res, next) => {
 
 router.post('/', uploaderProducts.single('thumbnails'),  async (req, res, next) => {
         const thumbnails = req.file.path
-        const { title, description, code, price, stock, category, owner } = req.body
+        const owner = req.user.email
+        const { title, description, code, price, stock, category } = req.body
 
         if(!title || !description || !code || !price || !stock || !category || !thumbnails || !owner){
             return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
@@ -49,7 +50,8 @@ router.post('/', uploaderProducts.single('thumbnails'),  async (req, res, next) 
         const result = await controller.addProduct(productComplete);
         if(result){
             req.logger.info(`el usuario ${owner} acaba de agregar ${JSON.stringify(productComplete, null, 2)}`)
-            res.status(200).send({status: 'Success', payload: result})
+            // res.status(200).send({status: 'Success', payload: result})
+            res.redirect('/products')
         }else{
             return next(new CustomError(errorsDictionary.DATABASE_ERROR))
         }

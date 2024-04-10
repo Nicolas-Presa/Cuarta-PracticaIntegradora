@@ -58,7 +58,8 @@ router.post('/:uid/documents', uploaderDocument.fields([
 
     try {
     const updatedUser = await controller.updateRoleToPremium(userId, documents);
-    res.status(200).send({status: 'Success', payload: updatedUser});
+    // res.status(200).send({status: 'Success', payload: updatedUser});
+    res.redirect('/profile');
     } catch (error) {
     return next(new CustomError(errorsDictionary.DATABASE_ERROR));
     }

@@ -44,7 +44,7 @@ router.get('/carts/:cid', async (req, res) => {
     try {
         const cartId = req.params.cid;
         let cart = await cartController.getCartsById(cartId);
-
+        
         res.render('cart', {
             title: 'Tu Carrito de compras',
             cart: cart,

@@ -2,28 +2,25 @@
 
 <form action="/api/products" method="post" class="form__addProduct" enctype="multipart/form-data">
     <label for="">titulo:</label>
-    <input type="text" name="title" placeholder="Nombre del producto aqui">
+    <input type="text" name="title" placeholder="Nombre del producto aqui" required>
 
     <label for="">Descripcion:</label>
-    <input type="text" name="description" placeholder="Descripcion...">
+    <input type="text" name="description" placeholder="Descripcion..." required>
 
     <label for="">Codigo:</label>
-    <input type="text" name="code">
+    <input type="text" name="code" required>
 
     <label for="">Precio:</label>
-    <input type="number" name="price" placeholder="$">
+    <input type="number" name="price" placeholder="$" required>
 
     <label for="">Stock:</label>
-    <input type="number" name="stock">
+    <input type="number" name="stock" required>
 
     <label for="">Categoria:</label>
-    <input type="text" name="category">
+    <input type="text" name="category" required>
 
     <label for="">Imagen:</label>
-    <input type="file" name="thumbnails">
-
-    <label for="">Email:</label>
-    <input type="email" name="owner">
+    <input type="file" name="thumbnails" required>
     
     <button type="submit">Agregar Producto</button>
 </form>

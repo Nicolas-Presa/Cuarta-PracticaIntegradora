@@ -4,9 +4,9 @@
     <h2>Bienvenido usuario {{ user.full_name }}</h2>
 {{/if}}
 
-<form action="/profile" method="get">
-    <button type="submit" class="button__logout">Mi perfil</button>
-</form>
+
+<button onclick="getProfile()" class="button__logout">Mi perfil</button>
+
 
 <h3 class="title"> {{title}} </h3>
 
@@ -39,9 +39,7 @@
             <h1 class="product__itle"> {{ this.title }} </h1>
             <p class="product__description">Talle: {{ this.description }} </p>
             <span class="product__price"> $ {{ this.price }} </span>
-            <form action="/api/carts/{{../user.cartId}}/products/{{this._id}}" method="post">
-                <button class="product__button">Agregar al carrito</button>
-            </form>
+                <button class="product__button" onclick="addProductToCart('{{../user.cartId}}', '{{this._id}}', '{{this.title}}')">Agregar al carrito</button>
             {{#if (eq ../user.role 'admin')}}
                 <button onclick="deleteProduct('{{this._id}}')">Eliminar Producto</button>
             {{/if}}
@@ -65,3 +63,26 @@ fetch(`/api/products/${productId}`, {
 .catch(error => console.error('Error:', error));
 }
 </script>
+
+<script>
+    function getProfile(){
+        window.location.href = '/profile'
+    }
+</script>
+
+<script>
+    function addProductToCart(cartId, productId, title){
+        fetch(`/api/carts/${cartId}/products/${productId}`, {
+            method: 'POST'
+        })
+        .then(response =>{
+            if(response.ok){
+                alert(`${title} agregado al carrito`)
+                window.location.reload()
+            }else{
+                console.log('Error en el endpoint');
+            }
+        })
+    }
+</script>
+
