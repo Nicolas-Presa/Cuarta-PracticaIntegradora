@@ -47,7 +47,8 @@ router.get('/carts/:cid', async (req, res) => {
 
         res.render('cart', {
             title: 'Tu Carrito de compras',
-            cart: cart
+            cart: cart,
+            hasTotal: cart.total > 0
         });
     } catch (err) {
         res.status(500).send({status: 'error', payload: err.message});

@@ -8,6 +8,66 @@
             <p>Descripción: {{this.productId.description}}</p>
             <p>Precio: ${{this.productId.price}}</p>
             <p>Cantidad: {{this.quantity}}</p>
+            <button onclick="deleteProduct('{{../cart._id}}', '{{this.productId._id}}')">Eliminar 1 del carrito</button>
         </div>
     {{/each}}
 </div>
+
+{{#if (hasTotal)}}
+    TOTAL: $ {{cart.total}}
+    <button onclick="getTicket('{{cart._id}}')">FINALIZAR COMPRA</button>
+{{else}}
+    <h1>Su Carrito esta vacio</h1>
+{{/if}}
+
+<button onclick="getProfile()">Volver al perfil</button>
+
+
+<script>
+    function deleteProduct(cartId, productId){
+        fetch(`/api/carts/${cartId}/products/${productId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if(response.ok){
+                window.location.reload();
+            }else{
+                console.error('Hubo un problema con la solicitud de eliminación');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+<script>
+    function getTicket(cartId){
+        fetch(`/api/carts/${cartId}/purchase`, {
+            method: 'GET'
+        })
+        .then(response => {
+            if(response.ok){
+                alert('Gracias por tu comrpra')
+                window.location.reload();
+            }else{
+                console.error('Fallo al finalizar la compra')
+            }
+        })
+        .catch(error => console.error('Error:', error))
+    }
+</script>
+
+<script>
+    function getProfile(){
+        fetch(`/profile`, {
+            method: 'GET'
+        })
+        .then(response => {
+            if(response.ok){
+                window.location.href = '/profile'
+            }else{
+                console.error('Fallo al activar la funcion');
+            }
+        })
+        .catch(error => console.error('Error', error));
+    }
+</script>

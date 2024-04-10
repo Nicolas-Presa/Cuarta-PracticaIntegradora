@@ -5,6 +5,8 @@ import { ProductDTO } from "../repositories/products.repository.js";
 import CustomError from '../services/error.custom.class.js';
 import errorsDictionary from "../services/error.dictionary.js";
 import { uploaderProducts } from "../uploader.js";
+import { sendProductDeleteConfirmation } from "../utils.js";
+import userModel from "../models/user.model.js";
 
 const router = Router();
 const controller = new ProductManager();
@@ -93,8 +95,19 @@ router.delete('/:pid([a-fA-F0-9]{24})', async (req, res, next) => {
             return next(new CustomError(errorsDictionary.ID_NOT_FOUND));
         }
 
+        const userEmail = product.owner
+        const user = await userModel.findOne({email: userEmail});
+        if(!user){
+            return next(new CustomError(errorsDictionary.ID_NOT_FOUND));
+        }
+
         if(email === product.owner || role === 'admin'){
             const deleteProduct = await controller.deleteProduct(productPid)
+
+            if(user.role === 'premium'){
+                await sendProductDeleteConfirmation(deleteProduct, userEmail);
+            }
+
             req.logger.warning(`El usuario ${email} acaba de eliminar ${JSON.stringify(deleteProduct, null, 2)}`)
             res.status(200).send({status: 'Success', payload: deleteProduct});
         }else{

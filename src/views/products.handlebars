@@ -42,7 +42,7 @@
             <form action="/api/carts/{{../user.cartId}}/products/{{this._id}}" method="post">
                 <button class="product__button">Agregar al carrito</button>
             </form>
-            {{#if (eq ../user.role 'user')}}
+            {{#if (eq ../user.role 'admin')}}
                 <button onclick="deleteProduct('{{this._id}}')">Eliminar Producto</button>
             {{/if}}
         </div>

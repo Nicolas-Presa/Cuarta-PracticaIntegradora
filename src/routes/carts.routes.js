@@ -172,7 +172,7 @@ router.delete('/:cid([a-fA-F0-9]{24})', async(req, res, next) => {
 
 router.get('/:cid/purchase', async(req, res, next) => {
     const cartId = req.params.cid
-    const userEmail = 'soyunemail'
+    const userEmail = req.user.email
 
     if(!cartId || !userEmail){
         return next(new CustomError(errorsDictionary.FEW_PARAMETERS))

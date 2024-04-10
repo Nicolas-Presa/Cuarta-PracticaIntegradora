@@ -72,7 +72,7 @@ class CartManager{
 
     async processPurchase(cartId, userEmail) {
         try{
-            return await services.processPurchase(cartId, userEmail)
+            return await services.processPurchaseServices(cartId, userEmail)
         }catch(err){
             return err.message
         }

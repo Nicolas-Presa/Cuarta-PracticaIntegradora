@@ -126,7 +126,7 @@ class CartServices {
         }
     }
 
-    async processPurchase(cartId, userEmail) {
+    async processPurchaseServices(cartId, userEmail) {
         try {
             const cart = await cartModel.findById(cartId)
             for (const item of cart.products) {

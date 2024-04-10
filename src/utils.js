@@ -71,3 +71,23 @@ export const sendUsersDeleteConfirmation = async (users) => {
         console.error('Error sending deletion confirmation emails:', err.message);
     }
 }
+
+export const sendProductDeleteConfirmation = async(product, email) => {
+        try{
+            const subject = 'CoderStore Eliminacion de Producto';
+            const html = `
+                <h1> Tu producto ${product} a sido eliminado por estadistica baja de ventas </h1>
+            `;
+
+            await mailerService.sendMail({
+                from: config.GOOGLE_APP_EMAIL,
+                to: email,
+                subject: subject,
+                html: html
+            });
+        }catch(err){
+            console.log(err.message)
+        }
+    }
+
+
