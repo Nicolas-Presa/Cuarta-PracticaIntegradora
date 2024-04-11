@@ -3,7 +3,6 @@ import LocalStrategy from 'passport-local';
 import userModel from '../models/user.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GithubStrategy from 'passport-github2';
-import config from '../config.js'
 import { UserDTO } from "../repositories/users.repository.js";
 import cartModel from '../models/cart.model.js'
 
@@ -121,9 +120,9 @@ const initPassport = () => {
     }
 
     passport.use('githubAuth', new GithubStrategy({
-        clientID: config.GITHUB_AUTH.clientId,
-        clientSecret: config.GITHUB_AUTH.clientSecret,
-        callbackURL: config.GITHUB_AUTH.callbackUrl
+        clientID: process.env.GITHUB_AUTH.clientId,
+        clientSecret: process.env.GITHUB_AUTH.clientSecret,
+        callbackURL: process.env.GITHUB_AUTH.callbackUrl
     }, verifyGithub))
 
     passport.serializeUser((user, done) => {

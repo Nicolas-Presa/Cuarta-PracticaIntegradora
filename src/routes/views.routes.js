@@ -2,7 +2,6 @@ import { Router } from "express";
 import {ProductManager} from '../controllers/product.controller.mdb.js'
 import {CartManager} from '../controllers/cart.controller.mdb.js'
 import { UserManager } from "../controllers/user.controller.mdb.js";
-import config from '../config.js'
 import jwt from 'jsonwebtoken'
 import handlePolicies from "../auth/policies.auth.js";
 
@@ -84,7 +83,7 @@ router.get('/login', (req, res) =>{
 router.get('/restore/:token', async (req, res) => {
     try {
         const { token } = req.params;
-        const decoded = jwt.verify(token, config.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         res.render('restore', { token });
     } catch (error) {

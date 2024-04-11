@@ -24,6 +24,11 @@
     <button onclick="updateRole('{{user._id}}', 'user')">Cambiar a rol usuario</button>
 {{/if}}
 
+{{#if (eq user.role 'admin')}}
+    <button onclick="checkAndDeleteUsers()">Chequear y eliminar usuarios por inactividad</button>
+    <button onclick="usersList()">Lista completa de usuarios</button>
+{{/if}}
+
 <script>
     const roleButton = document.querySelector('#role__button');
     roleButton.addEventListener('click', function() {
@@ -53,4 +58,25 @@ function updateRole(userId, newRole) {
         console.error('Error:', error);
     });
 }
+</script>
+
+<script>
+    function checkAndDeleteUsers(){
+        fetch(`api/users/deleteinactiveusers`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if(response.ok){
+                window.location.reload()
+            }else{
+                console.error('Error en el endpoint')
+            }
+        })
+    }
+</script>
+
+<script>
+    function usersList(){
+        window.location.href = '/users'
+    }
 </script>

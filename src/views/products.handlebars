@@ -6,6 +6,7 @@
 
 
 <button onclick="getProfile()" class="button__logout">Mi perfil</button>
+<button onclick="getCart('{{user.cartId}}')">Ver mi carrito</button>
 
 
 <h3 class="title"> {{title}} </h3>
@@ -40,9 +41,7 @@
             <p class="product__description">Talle: {{ this.description }} </p>
             <span class="product__price"> $ {{ this.price }} </span>
                 <button class="product__button" onclick="addProductToCart('{{../user.cartId}}', '{{this._id}}', '{{this.title}}')">Agregar al carrito</button>
-            {{#if (eq ../user.role 'admin')}}
                 <button onclick="deleteProduct('{{this._id}}')">Eliminar Producto</button>
-            {{/if}}
         </div>
     {{/each}}
 </div>
@@ -86,3 +85,8 @@ fetch(`/api/products/${productId}`, {
     }
 </script>
 
+<script>
+    function getCart(cartId){
+        window.location.href = `/carts/${cartId}`
+    }
+</script>

@@ -1,9 +1,9 @@
 import multer from 'multer'
-import config from './config.js'
+import { __DIRNAME } from './utils.js'
 
 const storageProducts = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, `${config.__DIRNAME}/public/img`)
+        cb(null, `${__DIRNAME}/public/img`)
     },
 
     filename: (req, file, cb) => {
@@ -13,7 +13,7 @@ const storageProducts = multer.diskStorage({
 
 const storageProfile = multer.diskStorage({
     destination: (req, file, cb) =>{
-        cb(null, `${config.__DIRNAME}/public/profile`)
+        cb(null, `${__DIRNAME}/public/profile`)
     },
 
     filename: (req, file, cb) => {
@@ -23,7 +23,7 @@ const storageProfile = multer.diskStorage({
 
 const storageDocument = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, `${config.__DIRNAME}/public/documents`)
+        cb(null, `${__DIRNAME}/public/documents`)
     },
 
     filename: (req, file, cb) => {

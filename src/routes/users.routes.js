@@ -12,7 +12,7 @@ const controller = new UserManager();
 
 
 
-router.get('/', async(req, res, next) => {
+router.get('/', handlePolicies(['ADMIN']), async(req, res, next) => {
     const users = await controller.getUsers();
     
     const filteredUsers = users.map(({first_name, last_name, age, __v, _id, password, thumbnails, cartId, documents, last_connection, ...rest }) => rest);
@@ -90,7 +90,7 @@ router.put('/premium/:uid([a-fA-F0-9]{24})', async(req, res) => {
 })
 
 
-router.delete('/delete', async(req, res, next) => {
+router.delete('/deleteinactiveusers', handlePolicies(['ADMIN']), async(req, res, next) => {
     const users = await controller.getUsers();
     if(!users){
         return next(new CustomError(errorsDictionary.DATABASE_ERROR));

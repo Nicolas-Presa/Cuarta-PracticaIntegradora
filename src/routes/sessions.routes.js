@@ -6,7 +6,6 @@ import { sendConfirmation } from "../utils.js";
 import userModel from '../models/user.model.js';
 import { createHash} from '../utils.js';
 import jwt from 'jsonwebtoken'
-import config from '../config.js'
 import { uploaderProfile } from '../uploader.js'
 
 
@@ -84,7 +83,7 @@ router.post('/sendemail', sendConfirmation(), async(req, res) => {
 router.post('/restore', async (req, res) => {
     try {
         const { token, email, pass } = req.body;
-        jwt.verify(token, config.JWT_SECRET);
+        jwt.verify(token, process.env.JWT_SECRET);
         const newPassword = createHash(pass);
         await userModel.findOneAndUpdate({ email }, { password: newPassword });
 
@@ -103,19 +102,6 @@ router.get('/github', passport.authenticate('githubAuth', { scope: ['user:email'
 router.get('/githubcallback', passport.authenticate('githubAuth', {failureRedirect: '/login'}), async(req, res) =>{
     try{
         res.redirect('/profile');
-    }catch(err){
-        res.status(500).send({status: 'error', payload: err.message})
-    }
-})
-
-router.get('/current', handlePolicies(['ADMIN']), (req, res) => {
-    try{
-        if(req.user){
-        const {_id, first_name, last_name, __v, password, ...user} = req.user;
-        res.status(200).send({status: 'Success', payload: user})
-        }else{
-            res.redirect('/login')
-        }
     }catch(err){
         res.status(500).send({status: 'error', payload: err.message})
     }

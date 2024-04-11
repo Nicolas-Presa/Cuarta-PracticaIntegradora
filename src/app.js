@@ -5,7 +5,8 @@ import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import cors from 'cors';
 
-import config from './config.js';
+
+import { __DIRNAME } from './utils.js';
 import productsRouter from './routes/products.routes.js';
 import cartsRouter from './routes/carts.routes.js';
 import viewsRouter from './routes/views.routes.js';
@@ -21,7 +22,7 @@ import swaggerUiExpress from 'swagger-ui-express';
 
 
 
-const PORT = config.PORT;
+const PORT = process.env.PORT || 3000;
 
 
 try{
@@ -54,7 +55,7 @@ try{
     app.use(express.urlencoded({extended: true}));
     app.use(express.json());
     app.use(session({ 
-        store: MongoStore.create({ mongoUrl: config.MONGOOSE_URL, mongoOptions: {}, ttl: 1800, clearInterval: 5000 }),
+        store: MongoStore.create({ mongoUrl: process.env.MONGOOSE_URL, mongoOptions: {}, ttl: 1800, clearInterval: 5000 }),
         secret: 'Us3RS3cR3T', 
         resave: false, 
         saveUninitialized: false 
@@ -75,10 +76,10 @@ try{
 
 
     app.engine('handlebars', handlebars.engine({helpers: {eq: (v1, v2) => v1 === v2,}}));
-    app.set('views', `${config.__DIRNAME}/views`);
+    app.set('views', `${__DIRNAME}/views`);
     app.set('view engine', 'handlebars');
 
-    app.use('/static', express.static(`${config.__DIRNAME}/public`));
+    app.use('/static', express.static(`${__DIRNAME}/public`));
 
     app.use((err, req, res, next) => {
         const code = err.code || 500;

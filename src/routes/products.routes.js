@@ -103,6 +103,10 @@ router.delete('/:pid([a-fA-F0-9]{24})', async (req, res, next) => {
             return next(new CustomError(errorsDictionary.ID_NOT_FOUND));
         }
 
+        if(email !== product.owner || role !== 'admin'){
+            return next(new CustomError(errorsDictionary.INVALID_ROLE))
+        }
+
         if(email === product.owner || role === 'admin'){
             const deleteProduct = await controller.deleteProduct(productPid)
 

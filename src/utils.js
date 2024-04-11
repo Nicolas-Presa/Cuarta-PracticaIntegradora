@@ -1,19 +1,22 @@
 import bcrypt from 'bcrypt'
 import nodemailer from 'nodemailer'
-import config from './config.js'
 import jwt from 'jsonwebtoken'
+import * as url from 'url'
 
 
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 export const isValidPassword = (user, password) => bcrypt.compareSync(password, user.password)
+
+export const __FILNAME = url.fileURLToPath(import.meta.url)
+export const __DIRNAME = url.fileURLToPath(new URL('.', import.meta.url))
 
 
 const mailerService = nodemailer.createTransport({
     service: 'gmail',
     port: 587,
     auth: {
-        user: config.GOOGLE_APP_EMAIL,
-        pass: config.GOOGLE_APP_PASS
+        user: process.env.GOOGLE_APP_EMAIL,
+        pass: process.env.GOOGLE_APP_PASS
     }
 });
 
@@ -23,7 +26,7 @@ export const sendConfirmation = () => {
         try{
             const userEmail = req.body.email;
             const user = { email: userEmail };
-            const secret = config.JWT_SECRET;
+            const secret = process.env.JWT_SECRET;
             const token = jwt.sign(user, secret, { expiresIn: '1h' });
             const resetLink = `http://localhost:8080/restore/${token}`;
 
@@ -35,7 +38,7 @@ export const sendConfirmation = () => {
             `;
 
             await mailerService.sendMail({
-                from: config.GOOGLE_APP_EMAIL,
+                from: process.env.GOOGLE_APP_EMAIL,
                 to: req.body.email,
                 subject: subject,
                 html: html
@@ -59,7 +62,7 @@ export const sendUsersDeleteConfirmation = async (users) => {
             `;
 
             return mailerService.sendMail({
-                from: config.GOOGLE_APP_EMAIL,
+                from: process.env.GOOGLE_APP_EMAIL,
                 to: userEmail,
                 subject: subject,
                 html: html
@@ -80,7 +83,7 @@ export const sendProductDeleteConfirmation = async(product, email) => {
             `;
 
             await mailerService.sendMail({
-                from: config.GOOGLE_APP_EMAIL,
+                from: process.env.GOOGLE_APP_EMAIL,
                 to: email,
                 subject: subject,
                 html: html

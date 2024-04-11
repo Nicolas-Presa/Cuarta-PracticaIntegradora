@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
-import config from '../config.js';
 
 
 export default class MongoSingleton {
     static #instance;
 
     constructor() {
-        mongoose.connect(config.MONGOOSE_URL);
+        mongoose.connect(process.env.MONGOOSE_URL);
     }
 
     static getInstance() {
