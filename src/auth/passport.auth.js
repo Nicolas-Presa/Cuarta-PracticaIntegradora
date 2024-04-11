@@ -120,9 +120,9 @@ const initPassport = () => {
     }
 
     passport.use('githubAuth', new GithubStrategy({
-        clientID: process.env.GITHUB_AUTH.clientId,
-        clientSecret: process.env.GITHUB_AUTH.clientSecret,
-        callbackURL: process.env.GITHUB_AUTH.callbackUrl
+        clientID: process.env.clientId,
+        clientSecret: process.env.clientSecret,
+        callbackURL: process.env.callbackUrl
     }, verifyGithub))
 
     passport.serializeUser((user, done) => {

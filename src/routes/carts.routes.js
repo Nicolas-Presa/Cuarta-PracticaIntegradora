@@ -52,7 +52,7 @@ router.get('/:cid([a-fA-F0-9]{24})', async(req, res, next) =>{
 router.post('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res, next) => {
     const cartId = req.params.cid;
     const productId = req.params.pid
-    const email = 'soyunemail'
+    const email = req.user.email
 
     if(!cartId || !productId || !email){
         return next(new CustomError(errorsDictionary.FEW_PARAMETERS))
